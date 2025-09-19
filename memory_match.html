@@ -11,9 +11,12 @@
         body {
             font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; flex-direction: column; color: #333; 
-            touch-action: manipulation; /* Optimize touch response */
-            -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            color: #333; 
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
         }
         .header {
             background: rgba(0, 0, 0, 0.8); 
@@ -36,6 +39,9 @@
             max-width: 900px; 
             margin: 0 auto; 
             padding: 10px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column;
         }
         .title { 
             text-align: center; 
@@ -92,39 +98,16 @@
             50% { transform: scale(1.02); } 
         }
 
-        #game-container {
-            position: relative; 
-            width: 100%; 
-            height: clamp(360px, 55vh, 560px); 
+        .stats-container {
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
-            border: 3px solid #3b5998; 
-            overflow: hidden;
-            touch-action: none; /* Prevent pinch zoom and scrolling */
-        }
-        #game-area { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 8px; 
-            padding: 8px; 
-        }
-
-        .stats { 
-            position: absolute; 
-            top: 8px; 
-            left: 8px; 
-            right: 8px; 
-            display: flex; 
-            justify-content: space-between; 
-            z-index: 200; 
-            flex-wrap: wrap; 
-            gap: 6px; 
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
         }
         .stat { 
             background: rgba(255, 255, 255, 0.95); 
@@ -137,6 +120,29 @@
         }
         #high-score, #best-time { 
             background: rgba(255, 215, 0, 0.95); 
+        }
+
+        #game-container {
+            position: relative; 
+            width: 100%; 
+            height: clamp(360px, 55vh, 560px); 
+            border-radius: 12px;
+            background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+            border: 3px solid #3b5998; 
+            overflow: hidden;
+            touch-action: none;
+        }
+        #game-area { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+            padding: 8px; 
         }
 
         #game-over, #start-screen {
@@ -171,7 +177,7 @@
             font-size: clamp(12px, 3vw, 16px); 
             opacity: 0.95; 
         }
-        .play-btn, .restart-btn, .screenshot-btn {
+        .play-btn, .restart-btn, .screenshot-btn, .fullscreen-btn, .cancel-fullscreen-btn {
             background: linear-gradient(45deg, #4ecdc4, #44a08d); 
             border: none; 
             padding: 10px 20px; 
@@ -183,8 +189,11 @@
             box-shadow: 0 3px 12px rgba(78, 205, 196, 0.4);
             touch-action: manipulation;
         }
-        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { 
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover, .fullscreen-btn:hover, .cancel-fullscreen-btn:hover { 
             transform: translateY(-3px); 
+        }
+        .fullscreen-btn, .cancel-fullscreen-btn {
+            display: none; /* Hidden by default, shown on mobile */
         }
 
         .share-buttons { 
@@ -306,10 +315,8 @@
                 gap: 6px; 
                 padding: 6px; 
             }
-            .stats { 
-                flex-direction: row; 
-                flex-wrap: wrap; 
-                justify-content: center; 
+            .stats-container { 
+                padding: 6px; 
                 gap: 5px; 
             }
             .stat { 
@@ -320,6 +327,10 @@
                 flex-direction: row; 
                 width: 100%; 
                 justify-content: center; 
+            }
+            .fullscreen-btn {
+                display: block;
+                margin: 8px auto;
             }
         }
         @media (max-width: 480px) {
@@ -334,7 +345,7 @@
             .card-front { 
                 font-size: clamp(14px, 3.5vw, 20px); 
             }
-            .stats { 
+            .stats-container { 
                 flex-direction: column; 
                 align-items: center; 
             }
@@ -342,6 +353,35 @@
                 flex-direction: column; 
                 align-items: center; 
             }
+        }
+        /* Full-screen mode for mobile */
+        .fullscreen-mode #game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            border-radius: 0;
+            border: none;
+        }
+        .fullscreen-mode .cancel-fullscreen-btn {
+            display: block;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 400;
+        }
+        .fullscreen-mode .container {
+            padding: 0;
+        }
+        .fullscreen-mode .stats-container,
+        .fullscreen-mode .instructions,
+        .fullscreen-mode .dashain-message,
+        .fullscreen-mode .contact,
+        .fullscreen-mode .footer,
+        .fullscreen-mode .header {
+            display: none;
         }
     </style>
 </head>
@@ -365,20 +405,22 @@
             </ul>
         </div>
 
+        <div class="stats-container">
+            <div class="stat" id="score">स्कोर: ०</div>
+            <div class="stat" id="moves">चालहरू: ०</div>
+            <div class="stat" id="mistakes">गल्तीहरू: ०</div>
+            <div class="stat" id="timer">समय: ०:००</div>
+            <div class="stat" id="high-score">उच्च स्कोर: ०</div>
+            <div class="stat" id="best-time">उत्तम समय: --:--</div>
+        </div>
+
+        <button class="fullscreen-btn" id="fullscreenBtn">पूर्ण स्क्रिन</button>
+
         <div id="game-container">
             <div id="game-area"></div>
 
             <div id="start-screen">
                 <button class="play-btn" id="playBtn">खेल्नुहोस्</button>
-            </div>
-
-            <div class="stats">
-                <div class="stat" id="score">स्कोर: ०</div>
-                <div class="stat" id="moves">चालहरू: ०</div>
-                <div class="stat" id="mistakes">गल्तीहरू: ०</div>
-                <div class="stat" id="timer">समय: ०:००</div>
-                <div class="stat" id="high-score">उच्च स्कोर: ०</div>
-                <div class="stat" id="best-time">उत्तम समय: --:--</div>
             </div>
 
             <div id="game-over">
@@ -396,6 +438,8 @@
                     <a href="#" class="share-btn facebook-btn" id="facebookShare">📘 फेसबुकमा सेयर गर्नुहोस्</a>
                 </div>
             </div>
+
+            <button class="cancel-fullscreen-btn" id="cancelFullscreenBtn">रद्द गर्नुहोस्</button>
         </div>
 
         <div class="contact">
@@ -421,6 +465,8 @@
         const playBtn = document.getElementById('playBtn');
         const restartBtn = document.getElementById('restartBtn');
         const screenshotBtn = document.getElementById('screenshotBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const cancelFullscreenBtn = document.getElementById('cancelFullscreenBtn');
         const scoreDisplay = document.getElementById('score');
         const movesDisplay = document.getElementById('moves');
         const mistakesDisplay = document.getElementById('mistakes');
@@ -511,7 +557,6 @@
             inner.appendChild(back);
             card.appendChild(inner);
             
-            // Handle both click and touch events
             card.addEventListener('click', () => handleCardClick(card));
             card.addEventListener('touchstart', (e) => {
                 e.preventDefault();
@@ -551,7 +596,7 @@
                     card1.classList.remove('flipped');
                     card2.classList.remove('flipped');
                     flippedCards = [];
-                }, 800); // Slightly faster flip-back for mobile
+                }, 800);
             }
         }
 
@@ -607,15 +652,28 @@
             finalTimeDisplay.textContent = formatTime(seconds);
             finalBestTimeDisplay.textContent = bestTime ? formatTime(bestTime) : '--:--';
             gameOverDisplay.style.display = 'flex';
+            exitFullscreen(); // Exit fullscreen on game end
         }
 
-        // Restart game
-        function restartGame() {
-            gameOverDisplay.style.display = 'none';
-            startScreen.style.display = 'flex';
-            gameActive = false;
-            clearInterval(timerInterval);
-            initGame();
+        // Fullscreen functionality
+        function enterFullscreen() {
+            if (gameContainer.requestFullscreen) {
+                gameContainer.requestFullscreen();
+            } else if (gameContainer.webkitRequestFullscreen) { // iOS Safari
+                gameContainer.webkitRequestFullscreen();
+            }
+            document.body.classList.add('fullscreen-mode');
+        }
+
+        function exitFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { // iOS Safari
+                    document.webkitExitFullscreen();
+                }
+            }
+            document.body.classList.remove('fullscreen-mode');
         }
 
         // Screenshot functionality
@@ -625,7 +683,7 @@
                 return;
             }
             html2canvas(gameContainer, {
-                scale: window.devicePixelRatio // Adjust for high-DPI displays
+                scale: window.devicePixelRatio
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `मेमोरी_म्याच_स्कोर_${score}.png`;
@@ -693,6 +751,18 @@
             shareToFacebook(e);
         }, { passive: false });
 
+        fullscreenBtn.addEventListener('click', enterFullscreen);
+        fullscreenBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            enterFullscreen();
+        }, { passive: false });
+
+        cancelFullscreenBtn.addEventListener('click', exitFullscreen);
+        cancelFullscreenBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            exitFullscreen();
+        }, { passive: false });
+
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             startScreen.style.display = 'flex';
@@ -710,9 +780,10 @@
         window.addEventListener('beforeunload', () => {
             gameActive = false;
             clearInterval(timerInterval);
+            exitFullscreen();
         });
 
-        // Prevent double-tap zoom and improve touch responsiveness
+        // Prevent double-tap zoom
         let lastTouchEnd = 0;
         document.addEventListener('touchend', (e) => {
             const now = (new Date()).getTime();
