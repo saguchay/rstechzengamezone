@@ -100,6 +100,72 @@
             50% { transform: scale(1.02); } 
         }
 
+        .stats { 
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(255,255,255,0.95); 
+            padding: 10px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            margin-bottom: 10px;
+        }
+        .stat { 
+            padding: 6px 12px; 
+            border-radius: 10px; 
+            font-size: clamp(12px, 2.5vw, 16px); 
+            font-weight: 600; 
+            color: #2d3748; 
+            background: rgba(255,255,255,0.8); 
+        }
+        #high-score { 
+            background: rgba(255,215,0,0.95); 
+        }
+        #timer { 
+            background: rgba(78,205,196,0.95); 
+        }
+
+        #fullscreen-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d); 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 25px; 
+            color: white; 
+            font-size: clamp(16px, 4vw, 20px); 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+            touch-action: manipulation;
+            margin: 10px auto;
+            display: block;
+            z-index: 400;
+        }
+        #fullscreen-btn:hover {
+            transform: translateY(-4px);
+        }
+
+        #exit-fullscreen-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            color: white;
+            font-size: clamp(12px, 3vw, 16px);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+            touch-action: manipulation;
+            z-index: 400;
+            display: none;
+        }
+        #exit-fullscreen-btn:hover {
+            transform: translateY(-4px);
+        }
+
         #game-container {
             position: relative; 
             width: 100%; 
@@ -117,28 +183,6 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-        }
-
-        .stats { 
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            right: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            z-index: 200; 
-        }
-        .stat { 
-            background: rgba(255,255,255,0.95); 
-            padding: 6px 12px; 
-            border-radius: 15px; 
-            font-size: clamp(12px, 2.5vw, 16px); 
-            font-weight: 600; 
-            color: #2d3748; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-        }
-        #high-score { 
-            background: rgba(255,215,0,0.95); 
         }
 
         #game-over, #start-screen {
@@ -172,7 +216,7 @@
             font-size: clamp(14px, 3.5vw, 18px); 
             opacity: 0.95; 
         }
-        .play-btn, .restart-btn, .screenshot-btn, .fullscreen-btn {
+        .play-btn, .restart-btn, .screenshot-btn {
             background: linear-gradient(45deg, #4ecdc4, #44a08d); 
             border: none; 
             padding: 12px 24px; 
@@ -183,8 +227,9 @@
             cursor: pointer; 
             box-shadow: 0 4px 15px rgba(78,205,196,0.4);
             touch-action: manipulation;
+            z-index: 400;
         }
-        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover, .fullscreen-btn:hover { 
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { 
             transform: translateY(-4px); 
         }
 
@@ -204,6 +249,7 @@
             gap: 6px; 
             color: white; 
             text-decoration: none; 
+            z-index: 400;
         }
         .tiktok-btn { 
             background: linear-gradient(45deg, #ff0050, #ff4d6d); 
@@ -285,18 +331,10 @@
         .facebook-social { 
             background: linear-gradient(45deg, #3b5998, #4267b2); 
         }
-        #fullscreen-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            z-index: 200;
-            padding: 8px 16px;
-            font-size: clamp(12px, 3vw, 16px);
-        }
+
         @media (max-width: 768px) {
             .stats { 
                 flex-direction: column; 
-                gap: 8px; 
                 align-items: center; 
             }
             .share-buttons { 
@@ -319,13 +357,12 @@
                 padding: 0;
                 z-index: 1000;
             }
-            .fullscreen #fullscreen-btn {
-                bottom: 20px;
-                right: 20px;
-            }
             .fullscreen .header,
-            .fullscreen .container > *:not(#game-container) {
+            .fullscreen .container > * {
                 display: none;
+            }
+            .fullscreen #exit-fullscreen-btn {
+                display: block;
             }
         }
     </style>
@@ -348,6 +385,15 @@
             </ul>
         </div>
 
+        <div class="stats">
+            <div class="stat" id="score">स्कोर: ०</div>
+            <div class="stat" id="misses">गुमाएका: ०</div>
+            <div class="stat" id="high-score">उच्च स्कोर: ०</div>
+            <div class="stat" id="timer">समय: ० सेकेन्ड</div>
+        </div>
+
+        <button class="fullscreen-btn" id="fullscreen-btn">पूर्ण स्क्रिन</button>
+
         <div id="game-container">
             <div id="game-area"></div>
 
@@ -355,16 +401,11 @@
                 <button class="play-btn" id="playBtn">खेल्नुहोस्</button>
             </div>
 
-            <div class="stats">
-                <div class="stat" id="score">स्कोर: ०</div>
-                <div class="stat" id="misses">गुमाएका: ०</div>
-                <div class="stat" id="high-score">उच्च स्कोर: ०</div>
-            </div>
-
             <div id="game-over">
                 <h2>खेल समाप्त!</h2>
                 <p>तपाईंको स्कोर: <span id="final-score">०</span></p>
                 <p>उच्च स्कोर: <span id="final-high-score">०</span></p>
+                <p>खेलिएको समय: <span id="final-timer">० सेकेन्ड</span></p>
                 <button class="restart-btn" id="restartBtn">फेरि खेल्नुहोस्</button>
                 <button class="screenshot-btn" id="screenshotBtn">स्क्रिनसट लिनुहोस्</button>
                 <div class="share-buttons">
@@ -373,7 +414,7 @@
                 </div>
             </div>
 
-            <button class="fullscreen-btn" id="fullscreenBtn">पूर्ण स्क्रिन</button>
+            <button class="exit-fullscreen-btn" id="exit-fullscreen-btn">पूर्ण स्क्रिन बन्द गर्नुहोस्</button>
         </div>
 
         <h1 class="title">फल समात्ने खेल</h1>
@@ -402,13 +443,16 @@
         const playBtn = document.getElementById('playBtn');
         const restartBtn = document.getElementById('restartBtn');
         const screenshotBtn = document.getElementById('screenshotBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
         const scoreDisplay = document.getElementById('score');
         const missesDisplay = document.getElementById('misses');
         const highScoreDisplay = document.getElementById('high-score');
+        const timerDisplay = document.getElementById('timer');
         const gameOverDisplay = document.getElementById('game-over');
         const finalScoreDisplay = document.getElementById('final-score');
         const finalHighScoreDisplay = document.getElementById('final-high-score');
+        const finalTimerDisplay = document.getElementById('final-timer');
         const tiktokShare = document.getElementById('tiktokShare');
         const facebookShare = document.getElementById('facebookShare');
 
@@ -416,46 +460,46 @@
         let score = 0;
         let misses = 0;
         let highScore = parseInt(localStorage.getItem('highScore') || '0', 10) || 0;
+        let gameTime = 0;
+        let timerIntervalId = null;
         let gameActive = false;
         let spawnIntervalId = null;
         let activeItems = [];
         let deviceId = localStorage.getItem('deviceId') || generateDeviceId();
 
         highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+        timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
 
         // Full-screen handling
-        function toggleFullScreen() {
+        function toggleFullScreen(e) {
+            e.stopPropagation();
             if (!document.fullscreenElement) {
-                // Request full-screen mode
                 gameContainer.requestFullscreen().then(() => {
                     gameContainer.classList.add('fullscreen');
-                    fullscreenBtn.textContent = 'पूर्ण स्क्रिन बन्द गर्नुहोस्';
-                    // Lock orientation to portrait on mobile devices
+                    fullscreenBtn.style.display = 'none';
+                    exitFullscreenBtn.style.display = 'block';
                     if (screen.orientation && screen.orientation.lock) {
                         screen.orientation.lock('portrait').catch(err => {
                             console.warn('Orientation lock failed:', err);
                         });
                     }
-                    // Adjust game area size
                     adjustGameArea();
                 }).catch(err => {
                     console.error('Fullscreen error:', err);
-                    alert('पूर्ण स्क्रिन मोडमा जान सकिएन।');
+                    alert('पूर्ण स्क्रिन मोडमा जान सकिएन। कृपया फेरि प्रयास गर्नुहोस्।');
                 });
             } else {
-                // Exit full-screen mode
                 document.exitFullscreen().then(() => {
                     gameContainer.classList.remove('fullscreen');
-                    fullscreenBtn.textContent = 'पूर्ण स्क्रिन';
-                    // Unlock orientation
+                    fullscreenBtn.style.display = 'block';
+                    exitFullscreenBtn.style.display = 'none';
                     if (screen.orientation && screen.orientation.unlock) {
                         screen.orientation.unlock();
                     }
-                    // Reset game area size
                     adjustGameArea();
                 }).catch(err => {
                     console.error('Exit fullscreen error:', err);
-                    alert('पूर्ण स्क्रिनबाट बाहिर निस्कन सकिएन।');
+                    alert('पूर्ण स्क्रिनबाट बाहिर निस्कन सकिएन। कृपया फेरि प्रयास गर्नुहोस्।');
                 });
             }
         }
@@ -474,17 +518,19 @@
             });
         }
 
-        // Update button text on fullscreen change
+        // Update button visibility on fullscreen change
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
                 gameContainer.classList.remove('fullscreen');
-                fullscreenBtn.textContent = 'पूर्ण स्क्रिन';
+                fullscreenBtn.style.display = 'block';
+                exitFullscreenBtn.style.display = 'none';
                 if (screen.orientation && screen.orientation.unlock) {
                     screen.orientation.unlock();
                 }
             } else {
                 gameContainer.classList.add('fullscreen');
-                fullscreenBtn.textContent = 'पूर्ण स्क्रिन बन्द गर्नुहोस्';
+                fullscreenBtn.style.display = 'none';
+                exitFullscreenBtn.style.display = 'block';
                 if (screen.orientation && screen.orientation.lock) {
                     screen.orientation.lock('portrait').catch(err => {
                         console.warn('Orientation lock failed:', err);
@@ -507,6 +553,25 @@
         // LocalStorage for high score
         function setHighScore(value) {
             localStorage.setItem('highScore', value);
+        }
+
+        // Timer handling
+        function startTimer() {
+            gameTime = 0;
+            timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
+            timerIntervalId = setInterval(() => {
+                if (gameActive) {
+                    gameTime += 1;
+                    timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerIntervalId) {
+                clearInterval(timerIntervalId);
+                timerIntervalId = null;
+            }
         }
 
         // Fall speed depends on score
@@ -642,8 +707,10 @@
         // End game
         function endGame() {
             gameActive = false;
+            stopTimer();
             finalScoreDisplay.textContent = score;
             finalHighScoreDisplay.textContent = highScore;
+            finalTimerDisplay.textContent = `${gameTime} सेकेन्ड`;
             gameOverDisplay.style.display = 'flex';
             startScreen.style.display = 'none';
 
@@ -669,8 +736,10 @@
             activeItems = [];
             score = 0; 
             misses = 0;
+            gameTime = 0;
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
+            timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
             gameActive = false;
         }
 
@@ -680,10 +749,13 @@
             gameOverDisplay.style.display = 'none';
             score = 0; 
             misses = 0;
+            gameTime = 0;
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
+            timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
             gameActive = true;
             startSpawning();
+            startTimer();
         }
 
         // Screenshot functionality
@@ -709,17 +781,17 @@
             if (navigator.share) {
                 navigator.share({
                     title: `फल समात्ने खेल - स्कोर ${score}!`,
-                    text: `मैले फल समात्ने खेलमा ${score} स्कोर बनाएँ! तपाईं पनि खेल्नुहोस् 🎮`,
+                    text: `मैले फल समात्ने खेलमा ${score} स्कोर बनाएँ! समय: ${gameTime} सेकेन्ड। तपाईं पनि खेल्नुहोस् 🎮`,
                     url: window.location.href
                 }).catch(console.error);
             } else {
-                const text = `फल समात्ने खेल - स्कोर ${score}! शुभ दशैं! 🎉\n${window.location.href}`;
+                const text = `फल समात्ने खेल - स्कोर ${score}! समय: ${gameTime} सेकेन्ड। शुभ दशैं! 🎉\n${window.location.href}`;
                 navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो! पेस्ट गर्नुहोस्।')).catch(() => alert('कपी गर्न सकिएन।'));
             }
         }
         function shareToFacebook(e) {
             e.preventDefault();
-            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent('मैले फल समात्ने खेलमा '+score+' स्कोर बनाएँ! शुभ दशैं! 🎉')}`;
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(`मैले फल समात्ने खेलमा ${score} स्कोर बनाएँ! समय: ${gameTime} सेकेन्ड। शुभ दशैं! 🎉`)}`;
             window.open(url, '_blank', 'width=600,height=400');
         }
 
@@ -747,18 +819,33 @@
         fullscreenBtn.addEventListener('click', toggleFullScreen, { passive: false });
         fullscreenBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            toggleFullScreen();
+            e.stopPropagation();
+            toggleFullScreen(e);
+        }, { passive: false });
+        exitFullscreenBtn.addEventListener('click', toggleFullScreen, { passive: false });
+        exitFullscreenBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFullScreen(e);
         }, { passive: false });
 
-        // Prevent page scrolling while touching game container
+        // Prevent page scrolling while touching game container, but allow button interactions
         gameContainer.addEventListener('touchstart', (e) => {
-            if (e.target.classList.contains('item')) return;
+            if (e.target.classList.contains('item') ||
+                e.target.classList.contains('play-btn') ||
+                e.target.classList.contains('restart-btn') ||
+                e.target.classList.contains('screenshot-btn') ||
+                e.target.classList.contains('exit-fullscreen-btn') ||
+                e.target.classList.contains('share-btn')) {
+                return;
+            }
             e.preventDefault();
         }, { passive: false });
 
         // Clean up on page unload
         window.addEventListener('beforeunload', () => {
             if (spawnIntervalId) clearInterval(spawnIntervalId);
+            if (timerIntervalId) clearInterval(timerIntervalId);
             activeItems.forEach(a => {
                 try { cancelAnimationFrame(a.rafId); } catch(e) {}
             });
@@ -771,6 +858,9 @@
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
             highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+            timerDisplay.textContent = `समय: ${gameTime} सेकेन्ड`;
+            fullscreenBtn.style.display = 'block';
+            exitFullscreenBtn.style.display = 'none';
         });
 
         // Handle window resize
