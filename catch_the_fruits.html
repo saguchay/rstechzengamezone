@@ -308,15 +308,24 @@
                 height: clamp(360px, 50vh, 480px);
             }
             #game-container.fullscreen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
                 height: 100vh;
                 border-radius: 0;
                 border: none;
                 margin: 0;
                 padding: 0;
+                z-index: 1000;
             }
             .fullscreen #fullscreen-btn {
                 bottom: 20px;
                 right: 20px;
+            }
+            .fullscreen .header,
+            .fullscreen .container > *:not(#game-container) {
+                display: none;
             }
         }
     </style>
@@ -417,17 +426,33 @@
         // Full-screen handling
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
+                // Request full-screen mode
                 gameContainer.requestFullscreen().then(() => {
                     gameContainer.classList.add('fullscreen');
                     fullscreenBtn.textContent = 'पूर्ण स्क्रिन बन्द गर्नुहोस्';
+                    // Lock orientation to portrait on mobile devices
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('portrait').catch(err => {
+                            console.warn('Orientation lock failed:', err);
+                        });
+                    }
+                    // Adjust game area size
+                    adjustGameArea();
                 }).catch(err => {
                     console.error('Fullscreen error:', err);
                     alert('पूर्ण स्क्रिन मोडमा जान सकिएन।');
                 });
             } else {
+                // Exit full-screen mode
                 document.exitFullscreen().then(() => {
                     gameContainer.classList.remove('fullscreen');
                     fullscreenBtn.textContent = 'पूर्ण स्क्रिन';
+                    // Unlock orientation
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    }
+                    // Reset game area size
+                    adjustGameArea();
                 }).catch(err => {
                     console.error('Exit fullscreen error:', err);
                     alert('पूर्ण स्क्रिनबाट बाहिर निस्कन सकिएन।');
@@ -435,15 +460,38 @@
             }
         }
 
+        // Adjust game area size on full-screen toggle
+        function adjustGameArea() {
+            const areaRect = gameArea.getBoundingClientRect();
+            activeItems.forEach(a => {
+                const item = a.el;
+                if (!item || !item.parentElement) return;
+                const itemRect = item.getBoundingClientRect();
+                const maxX = Math.max(0, areaRect.width - itemRect.width);
+                if (parseFloat(item.style.left) > maxX) {
+                    item.style.left = `${maxX}px`;
+                }
+            });
+        }
+
         // Update button text on fullscreen change
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
                 gameContainer.classList.remove('fullscreen');
                 fullscreenBtn.textContent = 'पूर्ण स्क्रिन';
+                if (screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                }
             } else {
                 gameContainer.classList.add('fullscreen');
                 fullscreenBtn.textContent = 'पूर्ण स्क्रिन बन्द गर्नुहोस्';
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('portrait').catch(err => {
+                        console.warn('Orientation lock failed:', err);
+                    });
+                }
             }
+            adjustGameArea();
         });
 
         // Generate a unique device ID
@@ -726,18 +774,7 @@
         });
 
         // Handle window resize
-        window.addEventListener('resize', () => {
-            activeItems.forEach(a => {
-                const item = a.el;
-                if (!item || !item.parentElement) return;
-                const itemRect = item.getBoundingClientRect();
-                const areaRect = gameArea.getBoundingClientRect();
-                const maxX = Math.max(0, areaRect.width - itemRect.width);
-                if (parseFloat(item.style.left) > maxX) {
-                    item.style.left = `${maxX}px`;
-                }
-            });
-        });
+        window.addEventListener('resize', adjustGameArea);
     </script>
 </body>
 </html>
