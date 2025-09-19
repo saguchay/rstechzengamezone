@@ -2,130 +2,135 @@
 <html lang="ne">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>पजल मेनिया | Puzzle Mania</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body {
-            font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; flex-direction: column; color: #333; overflow-x: hidden;
+            font-family: 'Noto Sans Devanagari', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh; display: flex; flex-direction: column; color: #333;
+            overscroll-behavior: none; touch-action: manipulation;
         }
         .header {
-            background: rgba(0, 0, 0, 0.8); padding: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;
+            background: rgba(0, 0, 0, 0.8); padding: 10px; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        .header a { color: #ffd700; font-size: clamp(16px, 4vw, 20px); font-weight: 700; text-decoration: none; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+        .header a {
+            color: #ffd700; font-size: clamp(16px, 4vw, 18px); font-weight: 700; text-decoration: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
         .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 12px; }
-        .title { text-align: center; font-size: clamp(20px, 5vw, 28px); font-weight: 700; color: #fff; padding: 10px 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-        .instructions, .contact { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px; }
-        .instructions h2 { font-size: clamp(16px, 4vw, 20px); color: #4a5568; text-align: center; margin-bottom: 8px; }
+        .title { text-align: center; font-size: clamp(20px, 5vw, 26px); font-weight: 700; color: #fff; padding: 10px 0; }
+        .instructions, .contact {
+            background: rgba(255, 255, 255, 0.95); border-radius: 10px; padding: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); margin-bottom: 10px;
+        }
+        .instructions h2 { font-size: clamp(16px, 4vw, 18px); color: #4a5568; text-align: center; margin-bottom: 8px; }
         .instructions ul { list-style: none; color: #718096; font-size: clamp(12px, 3vw, 14px); }
         .instructions li { margin-bottom: 6px; padding-left: 18px; position: relative; }
-        .instructions li::before { content: '🧩'; position: absolute; left: 0; top: 0; }
-        .dashain-message { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; text-align: center; padding: 12px; border-radius: 15px; margin: 5px 0; font-size: clamp(12px, 3vw, 14px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite; }
+        .instructions li::before { content: '🧩'; position: absolute; left: 0; }
+        .dashain-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; text-align: center;
+            padding: 10px; border-radius: 10px; margin: 5px 0; font-size: clamp(12px, 3vw, 14px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite;
+        }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
         #game-container {
-            position: relative; width: 100%; height: clamp(500px, 80vh, 800px); border-radius: 15px;
-            background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); border: 4px solid #3b5998; overflow: hidden;
+            position: relative; width: 100%; max-width: 500px; margin: 0 auto;
+            border-radius: 10px; background: linear-gradient(180deg, #87ceeb, #4a8e4c);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); border: 3px solid #3b5998; overflow: hidden;
+            aspect-ratio: 1 / 1; touch-action: none;
         }
         #game-area {
-            position: relative; width: 400px; height: 400px; margin: 20px auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: #3b5998; padding: 2px; border-radius: 10px;
+            position: relative; width: 100%; height: 100%; display: grid;
+            grid-template-columns: repeat(4, 1fr); gap: 2px; background: #3b5998; padding: 2px;
+            border-radius: 8px;
         }
 
-        .stats { display: flex; justify-content: space-between; z-index: 200; margin: 10px auto; width: 100%; max-width: 900px; padding: 0 12px; }
-        .stat { background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 15px; font-size: clamp(12px, 2.5vw, 16px); font-weight: 600; color: #2d3748; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .stats {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+            margin: 10px auto; width: 100%; max-width: 500px; padding: 0 12px;
+        }
+        .stat {
+            background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 10px;
+            font-size: clamp(12px, 2.5vw, 14px); font-weight: 600; color: #2d3748;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); flex: 1; text-align: center;
+        }
         #high-score, #best-time { background: rgba(255, 215, 0, 0.95); }
 
         #game-over, #start-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
-            display: flex; justify-content: center; align-items: center; z-index: 300;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 300;
         }
-        #game-over { display: none; flex-direction: column; color: white; text-align: center; gap: 8px; }
-        #game-over h2 { font-size: clamp(24px, 6vw, 32px); margin-bottom: 8px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        #game-over p { font-size: clamp(14px, 3.5vw, 18px); opacity: 0.95; }
+        #game-over { display: none; color: white; text-align: center; gap: 8px; }
+        #game-over h2 { font-size: clamp(20px, 5vw, 24px); margin-bottom: 8px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        #game-over p { font-size: clamp(12px, 3vw, 14px); opacity: 0.95; }
         .play-btn, .restart-btn, .screenshot-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d); border: none; padding: 12px 24px; border-radius: 25px; color: white; font-size: clamp(16px, 4vw, 20px); font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            background: linear-gradient(45deg, #4ecdc4, #44a08d); border: none;
+            padding: 10px 20px; border-radius: 20px; color: white; font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+            transition: transform 0.2s;
         }
-        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { transform: translateY(-4px); }
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { transform: translateY(-2px); }
 
-        .share-buttons { display: flex; gap: 8px; margin-top: 8px; }
-        .share-btn { padding: 10px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; }
-        .tiktok-btn { background: linear-gradient(45deg, #ff0050, #ff4d6d); box-shadow: 0 4px 15px rgba(255, 0, 80, 0.4); }
-        .facebook-btn { background: linear-gradient(45deg, #3b5998, #4267b2); box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4); }
+        .share-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; width: 80%; }
+        .share-btn {
+            padding: 8px 16px; border-radius: 15px; font-size: clamp(12px, 3vw, 14px);
+            font-weight: 600; cursor: pointer; color: white; text-decoration: none; text-align: center;
+        }
+        .tiktok-btn { background: linear-gradient(45deg, #ff0050, #ff4d6d); }
+        .facebook-btn { background: linear-gradient(45deg, #3b5998, #4267b2); }
 
         .tile {
-            width: 100px; height: 100px; background-size: 400px 400px; border-radius: 5px; cursor: pointer; transition: transform 0.3s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: 100%; height: 100%; background-size: cover; border-radius: 5px;
+            cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            touch-action: none;
         }
-        .tile:hover { transform: scale(1.05); }
+        .tile:hover { transform: scale(1.03); }
         .tile.empty { background: #ffffff; cursor: default; box-shadow: none; }
         .tile.empty:hover { transform: none; }
         .tile-0 { background-image: url('mimage/m7.jpg'); background-position: 0 0; }
-        .tile-1 { background-image: url('mimage/m7.jpg'); background-position: -100px 0; }
-        .tile-2 { background-image: url('mimage/m7.jpg'); background-position: -200px 0; }
-        .tile-3 { background-image: url('mimage/m7.jpg'); background-position: -300px 0; }
-        .tile-4 { background-image: url('mimage/m7.jpg'); background-position: 0 -100px; }
-        .tile-5 { background-image: url('mimage/m7.jpg'); background-position: -100px -100px; }
-        .tile-6 { background-image: url('mimage/m7.jpg'); background-position: -200px -100px; }
-        .tile-7 { background-image: url('mimage/m7.jpg'); background-position: -300px -100px; }
-        .tile-8 { background-image: url('mimage/m7.jpg'); background-position: 0 -200px; }
-        .tile-9 { background-image: url('mimage/m7.jpg'); background-position: -100px -200px; }
-        .tile-10 { background-image: url('mimage/m7.jpg'); background-position: -200px -200px; }
-        .tile-11 { background-image: url('mimage/m7.jpg'); background-position: -300px -200px; }
-        .tile-12 { background-image: url('mimage/m7.jpg'); background-position: 0 -300px; }
-        .tile-13 { background-image: url('mimage/m7.jpg'); background-position: -100px -300px; }
-        .tile-14 { background-image: url('mimage/m7.jpg'); background-position: -200px -300px; }
+        .tile-1 { background-image: url('mimage/m7.jpg'); background-position: -33.33% 0; }
+        .tile-2 { background-image: url('mimage/m7.jpg'); background-position: -66.67% 0; }
+        .tile-3 { background-image: url('mimage/m7.jpg'); background-position: -100% 0; }
+        .tile-4 { background-image: url('mimage/m7.jpg'); background-position: 0 -33.33%; }
+        .tile-5 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -33.33%; }
+        .tile-6 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -33.33%; }
+        .tile-7 { background-image: url('mimage/m7.jpg'); background-position: -100% -33.33%; }
+        .tile-8 { background-image: url('mimage/m7.jpg'); background-position: 0 -66.67%; }
+        .tile-9 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -66.67%; }
+        .tile-10 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -66.67%; }
+        .tile-11 { background-image: url('mimage/m7.jpg'); background-position: -100% -66.67%; }
+        .tile-12 { background-image: url('mimage/m7.jpg'); background-position: 0 -100%; }
+        .tile-13 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -100%; }
+        .tile-14 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -100%; }
         .tile-15 { background: #ffffff; }
 
         .footer { text-align: center; padding: 10px 0; color: white; font-size: clamp(10px, 2.5vw, 12px); }
-        .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
-        .social-link { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 18px; transition: transform 0.3s ease; }
+        .social-links { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
+        .social-link { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; text-decoration: none; }
         .tiktok-social { background: linear-gradient(45deg, #ff0050, #ff4d6d); }
         .facebook-social { background: linear-gradient(45deg, #3b5998, #4267b2); }
 
         @media (max-width: 768px) {
-            .stats { flex-direction: column; gap: 8px; align-items: center; margin-bottom: 10px; }
-            .share-buttons { flex-direction: column; width: 80%; }
-            #game-container { height: clamp(400px, 70vh, 600px); }
-            #game-area { width: 300px; height: 300px; }
-            .tile { width: 75px; height: 75px; background-size: 300px 300px; }
-            .tile-1 { background-position: -75px 0; }
-            .tile-2 { background-position: -150px 0; }
-            .tile-3 { background-position: -225px 0; }
-            .tile-4 { background-position: 0 -75px; }
-            .tile-5 { background-position: -75px -75px; }
-            .tile-6 { background-position: -150px -75px; }
-            .tile-7 { background-position: -225px -75px; }
-            .tile-8 { background-position: 0 -150px; }
-            .tile-9 { background-position: -75px -150px; }
-            .tile-10 { background-position: -150px -150px; }
-            .tile-11 { background-position: -225px -150px; }
-            .tile-12 { background-position: 0 -225px; }
-            .tile-13 { background-position: -75px -225px; }
-            .tile-14 { background-position: -150px -225px; }
+            .stats { flex-direction: column; align-items: center; }
+            .stat { width: 100%; max-width: 300px; }
+            #game-container { max-width: 400px; }
         }
         @media (max-width: 480px) {
-            #game-container { height: clamp(350px, 65vh, 500px); }
-            #game-area { width: 240px; height: 240px; }
-            .tile { width: 60px; height: 60px; background-size: 240px 240px; }
-            .tile-1 { background-position: -60px 0; }
-            .tile-2 { background-position: -120px 0; }
-            .tile-3 { background-position: -180px 0; }
-            .tile-4 { background-position: 0 -60px; }
-            .tile-5 { background-position: -60px -60px; }
-            .tile-6 { background-position: -120px -60px; }
-            .tile-7 { background-position: -180px -60px; }
-            .tile-8 { background-position: 0 -120px; }
-            .tile-9 { background-position: -60px -120px; }
-            .tile-10 { background-position: -120px -120px; }
-            .tile-11 { background-position: -180px -120px; }
-            .tile-12 { background-position: 0 -180px; }
-            .tile-13 { background-position: -60px -180px; }
-            .tile-14 { background-position: -120px -180px; }
+            .container { padding: 8px; }
+            #game-container { max-width: 300px; }
+            .title { font-size: clamp(18px, 4.5vw, 22px); }
+            .instructions h2 { font-size: clamp(14px, 3.5vw, 16px); }
+            .instructions ul { font-size: clamp(10px, 2.5vw, 12px); }
+            .dashain-message { font-size: clamp(10px, 2.5vw, 12px); }
+            .play-btn, .restart-btn, .screenshot-btn { padding: 8px 16px; font-size: clamp(12px, 3vw, 14px); }
+            .share-btn { padding: 6px 12px; font-size: clamp(10px, 2.5vw, 12px); }
         }
     </style>
 </head>
@@ -139,16 +144,7 @@
 
         <div class="dashain-message">🎉 शुभ दशैंको हार्दिक शुभकामना! टाइलहरू मिलाएर तस्वीर बनाउनुहोस्! 🥳</div>
 
-        <div class="instructions">
-            <h2>कसरी खेल्ने?</h2>
-            <ul>
-                <li>खेल सुरु गर्न "खेल्नुहोस्" बटन थिच्नुहोस्।</li>
-                <li>टाइलहरूमा क्लिक वा ट्याप गरेर, वा किबोर्डको तीर कुञ्जीहरू प्रयोग गरेर खाली ठाउँमा स्लाइड गर्नुहोस्।</li>
-                <li>मोबाइलमा, टाइलहरू स्वाइप गरेर सार्नुहोस्।</li>
-                <li>प्रत्येक अमान्य चालले गल्ती गणना गर्छ।</li>
-                <li>सबै टाइलहरू सही क्रममा मिलाएर तस्वीर पूरा गर्नुहोस्!</li>
-            </ul>
-        </div>
+        
 
         <div class="stats">
             <div class="stat" id="moves">चालहरू: ०</div>
@@ -179,6 +175,17 @@
             </div>
         </div>
 
+
+        <div class="instructions">
+            <h2>कसरी खेल्ने?</h2>
+            <ul>
+                <li>खेल सुरु गर्न "खेल्नुहोस्" बटन थिच्नुहोस्।</li>
+                <li>टाइलहरूमा ट्याप वा स्वाइप गरेर खाली ठाउँमा स्लाइड गर्नुहोस्।</li>
+                <li>किबोर्डको तीर कुञ्जीहरू प्रयोग गर्न सकिन्छ।</li>
+                <li>प्रत्येक अमान्य चालले गल्ती गणना गर्छ।</li>
+                <li>टाइलहरू सही क्रममा मिलाएर तस्वीर पूरा गर्नुहोस्!</li>
+            </ul>
+        </div>
         <div class="contact">
             <p>सम्पर्क: <a href="tel:9808942229">9808942229</a> | इमेल: <a href="mailto:rstechzen@gmail.com">rstechzen@gmail.com</a></p>
         </div>
@@ -223,13 +230,13 @@
         let gameActive = false;
         let tiles = [];
         let board = [];
-        const gridSize = 4; // 4x4 grid
+        const gridSize = 4;
         const totalTiles = gridSize * gridSize;
 
         // Initialize displays
         bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
 
-        // Format time (seconds to mm:ss)
+        // Format time
         function formatTime(seconds) {
             const min = Math.floor(seconds / 60);
             const sec = seconds % 60;
@@ -243,7 +250,7 @@
             timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
             timerInterval = setInterval(() => {
                 if (gameActive) {
-                    seconds += 1;
+                    seconds++;
                     timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
                 }
             }, 1000);
@@ -254,17 +261,15 @@
             localStorage.setItem('puzzleManiaBestTime', value);
         }
 
-        // Shuffle array (ensure solvable puzzle)
+        // Shuffle board (ensure solvable)
         function shuffleBoard() {
             let numbers = Array.from({ length: totalTiles }, (_, i) => i);
             let inversions;
             do {
-                // Fisher-Yates shuffle
                 for (let i = numbers.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
                 }
-                // Calculate inversions to ensure solvability
                 inversions = 0;
                 for (let i = 0; i < totalTiles - 1; i++) {
                     for (let j = i + 1; j < totalTiles; j++) {
@@ -273,12 +278,9 @@
                         }
                     }
                 }
-                // For a 4x4 puzzle, inversions + empty tile row (1-based) must be odd
                 const emptyIndex = numbers.indexOf(totalTiles - 1);
                 const emptyRow = Math.floor(emptyIndex / gridSize) + 1;
-                const isSolvable = (inversions + emptyRow) % 2 === 1;
-                if (!isSolvable) continue;
-                return numbers;
+                if ((inversions + emptyRow) % 2 === 1) return numbers;
             } while (true);
         }
 
@@ -310,7 +312,7 @@
             });
         }
 
-        // Find empty tile position
+        // Get empty tile position
         function getEmptyPosition() {
             return board.indexOf(totalTiles - 1);
         }
@@ -326,23 +328,19 @@
                    (tileCol === emptyCol && Math.abs(tileRow - emptyRow) === 1);
         }
 
-        // Move tile to empty position
+        // Move tile
         function moveTile(tileIndex) {
             if (!gameActive) return;
             if (canMoveTile(tileIndex)) {
                 const emptyIndex = getEmptyPosition();
                 [board[tileIndex], board[emptyIndex]] = [board[emptyIndex], board[tileIndex]];
-                moves += 1;
+                moves++;
                 movesDisplay.textContent = `चालहरू: ${moves}`;
                 updateBoard();
-                if (isSolved()) {
-                    endGame();
-                }
-                return true;
+                if (isSolved()) endGame();
             } else {
-                mistakes += 1;
+                mistakes++;
                 mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
-                return false;
             }
         }
 
@@ -362,26 +360,16 @@
             let tileIndex = -1;
 
             switch (e.key) {
-                case 'ArrowUp':
-                    if (emptyRow < gridSize - 1) tileIndex = (emptyRow + 1) * gridSize + emptyCol;
-                    break;
-                case 'ArrowDown':
-                    if (emptyRow > 0) tileIndex = (emptyRow - 1) * gridSize + emptyCol;
-                    break;
-                case 'ArrowLeft':
-                    if (emptyCol < gridSize - 1) tileIndex = emptyRow * gridSize + emptyCol + 1;
-                    break;
-                case 'ArrowRight':
-                    if (emptyCol > 0) tileIndex = emptyRow * gridSize + emptyCol - 1;
-                    break;
+                case 'ArrowUp': if (emptyRow < gridSize - 1) tileIndex = (emptyRow + 1) * gridSize + emptyCol; break;
+                case 'ArrowDown': if (emptyRow > 0) tileIndex = (emptyRow - 1) * gridSize + emptyCol; break;
+                case 'ArrowLeft': if (emptyCol < gridSize - 1) tileIndex = emptyRow * gridSize + emptyCol + 1; break;
+                case 'ArrowRight': if (emptyCol > 0) tileIndex = emptyRow * gridSize + emptyCol - 1; break;
             }
 
-            if (tileIndex !== -1) {
-                moveTile(tileIndex);
-            }
+            if (tileIndex !== -1) moveTile(tileIndex);
         }
 
-        // Update board display
+        // Update board
         function updateBoard() {
             tiles.forEach((tile, index) => {
                 const number = board[index];
@@ -391,7 +379,7 @@
             });
         }
 
-        // Check if puzzle is solved
+        // Check if solved
         function isSolved() {
             return board.every((number, index) => number === index);
         }
@@ -430,10 +418,10 @@
             initGame();
         }
 
-        // Screenshot functionality
+        // Screenshot
         function takeScreenshot() {
             if (typeof html2canvas === 'undefined') {
-                alert('Screenshot library not yet loaded. Try again in a moment.');
+                alert('स्क्रिनसट लाइब्रेरी लोड भएको छैन। कृपया पछि पुन: प्रयास गर्नुहोस्।');
                 return;
             }
             html2canvas(gameContainer).then(canvas => {
@@ -443,7 +431,7 @@
                 link.click();
             }).catch(err => {
                 console.error(err);
-                alert('स्क्रिनसट लिन समस्या भयो। कन्सोल हेर्नुहोस्।');
+                alert('स्क्रिनसट लिन समस्या भयो।');
             });
         }
 
@@ -453,18 +441,18 @@
             if (navigator.share) {
                 navigator.share({
                     title: `पजल मेनिया - समय ${formatTime(seconds)}!`,
-                    text: `मैले पजल मेनियामा ${formatTime(seconds)} समयमा पजल सल्भ गरें! तपाईं पनि खेल्नुहोस् 🎮`,
+                    text: `मैले पजल मेनियामा ${formatTime(seconds)} समयमा पजल सल्भ गरें! 🎮`,
                     url: window.location.href
                 }).catch(console.error);
             } else {
-                const text = `पजल मेनिया - समय ${formatTime(seconds)}! ${moves} चालहरूमा पजल सल्भ! शुभ दशैं! 🎉\n${window.location.href}`;
-                navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो! पेस्ट गर्नुहोस्।')).catch(() => alert('कपी गर्न सकिएन।'));
+                const text = `पजल मेनिया - समय ${formatTime(seconds)}! ${moves} चालहरूमा पजल सल्भ! 🎉\n${window.location.href}`;
+                navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो!')).catch(() => alert('कपी गर्न सकिएन।'));
             }
         }
 
         function shareToFacebook(e) {
             e.preventDefault();
-            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent('मैले पजल मेनियामा ' + formatTime(seconds) + ' समयमा र ' + moves + ' चालहरूमा पजल सल्भ गरें! शुभ दशैं! 🎉')}`;
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent('मैले पजल मेनियामा ' + formatTime(seconds) + ' समयमा र ' + moves + ' चालहरूमा पजल सल्भ गरें! 🎉')}`;
             window.open(url, '_blank', 'width=600,height=400');
         }
 
@@ -477,67 +465,66 @@
         screenshotBtn.addEventListener('click', takeScreenshot);
         tiktokShare.addEventListener('click', shareToTikTok);
         facebookShare.addEventListener('click', shareToFacebook);
-
-        // Keyboard support
         document.addEventListener('keydown', handleKeyboardInput);
 
-        // Touch support for swipe gestures
-        let touchStartX = 0, touchStartY = 0;
-        gameContainer.addEventListener('touchstart', (e) => {
+        // Touch support
+        let touchStartX = 0, touchStartY = 0, touchTile = null;
+        gameArea.addEventListener('touchstart', (e) => {
             e.preventDefault();
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
+            touchTile = e.target.closest('.tile');
         }, { passive: false });
 
-        gameContainer.addEventListener('touchend', (e) => {
+        gameArea.addEventListener('touchend', (e) => {
             e.preventDefault();
-            if (!gameActive) return;
+            if (!gameActive || !touchTile || touchTile.classList.contains('empty')) return;
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
-            const minSwipeDistance = 30;
+            const minSwipeDistance = 20;
 
+            const number = parseInt(touchTile.dataset.number);
+            const tileIndex = board.indexOf(number);
             const emptyIndex = getEmptyPosition();
+            const tileRow = Math.floor(tileIndex / gridSize);
+            const tileCol = tileIndex % gridSize;
             const emptyRow = Math.floor(emptyIndex / gridSize);
             const emptyCol = emptyIndex % gridSize;
-            let tileIndex = -1;
 
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-                if (deltaX > 0 && emptyCol < gridSize - 1) {
-                    // Swipe right: move tile left of empty space
-                    tileIndex = emptyRow * gridSize + emptyCol + 1;
-                } else if (deltaX < 0 && emptyCol > 0) {
-                    // Swipe left: move tile right of empty space
-                    tileIndex = emptyRow * gridSize + emptyCol - 1;
+                if (deltaX > 0 && tileCol > 0 && tileRow === emptyRow && tileCol - 1 === emptyCol) {
+                    moveTile(tileIndex);
+                } else if (deltaX < 0 && tileCol < gridSize - 1 && tileRow === emptyRow && tileCol + 1 === emptyCol) {
+                    moveTile(tileIndex);
+                } else {
+                    mistakes++;
+                    mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
                 }
             } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipeDistance) {
-                if (deltaY > 0 && emptyRow < gridSize - 1) {
-                    // Swipe down: move tile above empty space
-                    tileIndex = (emptyRow + 1) * gridSize + emptyCol;
-                } else if (deltaY < 0 && emptyRow > 0) {
-                    // Swipe up: move tile below empty space
-                    tileIndex = (emptyRow - 1) * gridSize + emptyCol;
+                if (deltaY > 0 && tileRow > 0 && tileCol === emptyCol && tileRow - 1 === emptyRow) {
+                    moveTile(tileIndex);
+                } else if (deltaY < 0 && tileRow < gridSize - 1 && tileCol === emptyCol && tileRow + 1 === emptyRow) {
+                    moveTile(tileIndex);
+                } else {
+                    mistakes++;
+                    mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
                 }
-            }
-
-            if (tileIndex !== -1) {
+            } else if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
+                // Handle tap
                 moveTile(tileIndex);
             }
         }, { passive: false });
 
-        // Initialize on load
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             startScreen.style.display = 'flex';
             gameOverDisplay.style.display = 'none';
-            movesDisplay.textContent = `चालहरू: ${moves}`;
-            mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
-            timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
-            bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
             initGame();
         });
 
-        // Clean up on unload
+        // Cleanup
         window.addEventListener('beforeunload', () => {
             gameActive = false;
             clearInterval(timerInterval);
