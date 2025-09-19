@@ -186,11 +186,9 @@
         .arrow-controls {
             position: absolute;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            width: 100%;
             display: none;
-            justify-content: center;
-            gap: 40px;
+            justify-content: space-between;
             z-index: 400;
         }
         .arrow-btn {
@@ -208,6 +206,14 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
             touch-action: manipulation;
+        }
+        #leftArrowBtn {
+            position: absolute;
+            left: 20px;
+        }
+        #rightArrowBtn {
+            position: absolute;
+            right: 20px;
         }
         .arrow-btn:disabled {
             opacity: 0.5;
