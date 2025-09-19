@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSTECHZEN Game Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header a {
+            color: #ffd700;
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 700;
+            text-decoration: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 10px auto;
+            max-width: 1200px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .banner h1 {
+            font-size: clamp(24px, 6vw, 36px);
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .banner p {
+            font-size: clamp(14px, 3.5vw, 18px);
+            opacity: 0.95;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 2px solid #3b5998;
+        }
+
+        .game-card-content {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .game-card h2 {
+            font-size: clamp(16px, 4vw, 20px);
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .game-card p {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #718096;
+            margin-bottom: 10px;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: white;
+            font-size: clamp(10px, 2.5vw, 12px);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .social-link {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .tiktok-social {
+            background: linear-gradient(45deg, #ff0050, #ff4d6d);
+        }
+
+        .facebook-social {
+            background: linear-gradient(45deg, #3b5998, #4267b2);
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .banner {
+                padding: 15px;
+            }
+
+            .game-card img {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-card {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .banner h1 {
+                font-size: clamp(20px, 5vw, 28px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="https://rstechzen.rf.gd/" target="_blank" rel="noopener">RSTECHZEN Game Zone</a>
+    </div>
+
+    <div class="container">
+        <div class="banner">
+            <h1>🎮 RSTECHZEN Game Zone मा स्वागत छ! 🎉</h1>
+            <p>रोमाञ्चक खेलहरू खेल्नुहोस् र आफ्नो स्कोर साथीहरूसँग सेयर गर्नुहोस्!</p>
+        </div>
+
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150?text=Catch+the+Fruit" alt="Catch the Fruit">
+                <div class="game-card-content">
+                    <h2>फल समात्ने खेल</h2>
+                    <p>छिटो फलहरू समात्नुहोस् र उच्च स्कोर बनाउनुहोस्!</p>
+                    <button class="play-btn" onclick="window.location.href='catch_the_fruits.html'">खेल्नुहोस्</button>
+                </div>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150?text=Memory+Match" alt="Memory Match">
+                <div class="game-card-content">
+                    <h2>मेमोरी म्याच</h2>
+                    <p>कार्डहरू म्याच गर्नुहोस् र आफ्नो स्मरणशक्ति जाँच्नुहोस्!</p>
+                    <button class="play-btn" onclick="window.location.href='memory_match.html'">खेल्नुहोस्</button>
+                </div>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150?text=Dashain+Dash" alt="Dashain Dash">
+                <div class="game-card-content">
+                    <h2>दशैं ड्यास</h2>
+                    <p>दशैंको उत्साहमा दौडनुहोस् र बाधाहरूबाट बच्नुहोस्!</p>
+                    <button class="play-btn" onclick="window.location.href='dashin_dash.html'">खेल्नुहोस्</button>
+                </div>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300x150?text=Puzzle+Mania" alt="Puzzle Mania">
+                <div class="game-card-content">
+                    <h2>पजल मेनिया</h2>
+                    <p>चुनौतीपूर्ण पजलहरू समाधान गर्नुहोस्!</p>
+                    <button class="play-btn" onclick="window.location.href='puzzle.html'">खेल्नुहोस्</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>विकासकर्ता: रस्टेकजेन | Social ID: @rstechzen | <a href="https://rstechzen.rf.gd/" target="_blank" rel="noopener">वेबसाइट</a></p>
+            <p>कृपया टिकटक र फेसबुकमा हामीलाई फलो गर्नुहोस्!</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/rstechzen" class="social-link facebook-social" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+                <a href="https://www.tiktok.com/@rstechzen" class="social-link tiktok-social" target="_blank" rel="noopener" aria-label="TikTok">♬</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add hover animation for game cards
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+            });
+        });
+
+        // Prevent page scrolling on touch devices
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.game-card') || e.target.closest('.play-btn')) {
+                return;
+            }
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>

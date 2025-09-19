@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>दशैं ड्यास | Dashain Dash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; flex-direction: column; color: #333; overflow-x: hidden;
+        }
+        .header {
+            background: rgba(0, 0, 0, 0.8); padding: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .header a { color: #ffd700; font-size: clamp(16px, 4vw, 20px); font-weight: 700; text-decoration: none; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+        .container { width: 100%; max-width: 1000px; margin: 12px auto; padding: 12px; }
+        .title { text-align: center; font-size: clamp(20px, 5vw, 28px); font-weight: 700; color: #fff; padding: 10px 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+        .instructions, .contact { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px; }
+        .instructions h2 { font-size: clamp(16px, 4vw, 20px); color: #4a5568; text-align: center; margin-bottom: 8px; }
+        .instructions ul { list-style: none; color: #718096; font-size: clamp(12px, 3vw, 14px); }
+        .instructions li { margin-bottom: 6px; padding-left: 18px; position: relative; }
+        .instructions li::before { content: '🏃'; position: absolute; left: 0; top: 0; }
+        .dashain-message { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; text-align: center; padding: 12px; border-radius: 15px; margin: 5px 0; font-size: clamp(12px, 3vw, 14px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+
+        #game-container {
+            position: relative; width: 100%; height: clamp(500px, 80vh, 800px); border-radius: 15px;
+            background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); border: 4px solid #3b5998; overflow: hidden;
+        }
+        #game-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; }
+
+        .stats { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; z-index: 200; gap:8px; flex-wrap:wrap; }
+        .stat { background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 15px; font-size: clamp(12px, 2.5vw, 16px); font-weight: 600; color: #2d3748; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        #high-score, #best-time { background: rgba(255, 215, 0, 0.95); }
+
+        #game-over, #start-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55);
+            display: flex; justify-content: center; align-items: center; z-index: 300;
+        }
+        #game-over { display: none; flex-direction: column; color: white; text-align: center; gap: 8px; padding: 20px; }
+        #game-over h2 { font-size: clamp(24px, 6vw, 32px); margin-bottom: 8px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        #game-over p { font-size: clamp(14px, 3.5vw, 18px); opacity: 0.95; }
+        .play-btn, .restart-btn, .screenshot-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d); border: none; padding: 12px 24px; border-radius: 25px; color: white; font-size: clamp(16px, 4vw, 20px); font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { transform: translateY(-4px); }
+
+        .share-buttons { display: flex; gap: 8px; margin-top: 8px; flex-wrap:wrap; justify-content:center; }
+        .share-btn { padding: 10px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; }
+        .tiktok-btn { background: linear-gradient(45deg, #ff0050, #ff4d6d); box-shadow: 0 4px 15px rgba(255, 0, 80, 0.4); }
+        .facebook-btn { background: linear-gradient(45deg, #3b5998, #4267b2); box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4); }
+
+        .player {
+            position: absolute; width: clamp(40px, 8vw, 60px); height: clamp(40px, 8vw, 60px);
+            background: url('player.png') no-repeat center/cover;
+            bottom: 20px; transition: left 0.18s ease; z-index: 150; user-select: none; -webkit-user-select: none;
+            border-radius: 8px;
+        }
+        .obstacle {
+            position: absolute; width: clamp(30px, 6vw, 50px); height: clamp(30px, 6vw, 50px);
+            background: url('fruits_images/apple.png') no-repeat center/cover;
+            top: -80px; z-index: 100; border-radius: 10px;
+        }
+        .item {
+            position: absolute; width: clamp(25px, 5vw, 40px); height: clamp(25px, 5vw, 40px);
+            background: url('fruits_images/coconut.png') no-repeat center/cover;
+            top: -80px; z-index: 120; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .splash {
+            position: absolute; width: 70px; height: 24px; background: radial-gradient(circle, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; opacity: 0; pointer-events: none; animation: splashEffect 0.7s ease-out forwards; z-index: 130;
+        }
+        @keyframes splashEffect { 0% { opacity: 0.7; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.5); } }
+
+        .footer { text-align: center; padding: 10px 0; color: white; font-size: clamp(10px, 2.5vw, 12px); }
+        .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+        .social-link { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 18px; transition: transform 0.3s ease; }
+        .tiktok-social { background: linear-gradient(45deg, #ff0050, #ff4d6d); }
+        .facebook-social { background: linear-gradient(45deg, #3b5998, #4267b2); }
+
+        @media (max-width: 768px) {
+            .stats { flex-direction: column; gap: 8px; align-items: center; }
+            .share-buttons { flex-direction: column; width: 80%; }
+            #game-container { height: clamp(400px, 70vh, 600px); }
+        }
+        @media (max-width: 480px) {
+            #game-container { height: clamp(350px, 65vh, 500px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" target="_blank" rel="noopener">RSTECHZEN Game Zone</a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">दशैं ड्यास</h1>
+
+        <div class="dashain-message">🎉 शुभ दशैंको हार्दिक शुभकामना! दौडेर वस्तुहरू समात्नुहोस्! 🥳</div>
+
+        <div class="instructions">
+            <h2>कसरी खेल्ने?</h2>
+            <ul>
+                <li>खेल सुरु गर्न "खेल्नुहोस्" बटन थिच्नुहोस्।</li>
+                <li>← र → कीहरू वा टच स्वाइप गरेर खेलाडीलाई नियन्त्रण गर्नुहोस्।</li>
+                <li>नरिवल समात्नुहोस्, प्रत्येकले १० अङ्क थपिन्छ।</li>
+                <li>बाधाहरूसँग ठोक्किनुहोस् भने गल्ती गणना हुन्छ; ५ गल्तीहरूमा खेल समाप्त हुन्छ।</li>
+            </ul>
+        </div>
+
+        <div id="game-container" aria-label="Game container">
+            <div id="game-area" role="application" aria-label="Game area"></div>
+
+            <div id="start-screen" aria-hidden="false" style="display:none;">
+                <button class="play-btn" id="playBtn">खेल्नुहोस्</button>
+            </div>
+
+            <div class="stats" aria-hidden="true">
+                <div class="stat" id="score">स्कोर: ०</div>
+                <div class="stat" id="mistakes">गल्तीहरू: ०</div>
+                <div class="stat" id="timer">समय: ०:००</div>
+                <div class="stat" id="high-score">उच्च स्कोर: ०</div>
+                <div class="stat" id="best-time">उत्तम समय: --:--</div>
+            </div>
+
+            <div id="game-over" aria-hidden="true">
+                <h2>खेल समाप्त!</h2>
+                <p>तपाईंको स्कोर: <span id="final-score">०</span></p>
+                <p>उच्च स्कोर: <span id="final-high-score">०</span></p>
+                <p>कुल गल्तीहरू: <span id="final-mistakes">०</span></p>
+                <p>समय: <span id="final-time">०:००</span></p>
+                <p>उत्तम समय: <span id="final-best-time">--:--</span></p>
+                <button class="restart-btn" id="restartBtn">फेरि खेल्नुहोस्</button>
+                <button class="screenshot-btn" id="screenshotBtn">स्क्रिनसट लिनुहोस्</button>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn tiktok-btn" id="tiktokShare">📱 टिकटकमा सेयर गर्नुहोस्</a>
+                    <a href="#" class="share-btn facebook-btn" id="facebookShare">📘 फेसबुकमा सेयर गर्नुहोस्</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact">
+            <p>सम्पर्क: <a href="tel:9808942229">9808942229</a> | इमेल: <a href="mailto:rstechzen@gmail.com">rstechzen@gmail.com</a></p>
+        </div>
+
+        <div class="footer">
+            <p>विकासकर्ता: रस्टेकजेन | Social ID: @rstechzen | <a href="https://rstechzen.rf.gd/" target="_blank" rel="noopener">वेबसाइट</a></p>
+            <p>कृपया टिकटक र फेसबुकमा हामीलाई फलो गर्नुहोस्!</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/rstechzen" class="social-link facebook-social" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+                <a href="https://www.tiktok.com/@rstechzen" class="social-link tiktok-social" target="_blank" rel="noopener" aria-label="TikTok">♬</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        /* ======== Elements & State ======== */
+        const gameContainer = document.getElementById('game-container');
+        const gameArea = document.getElementById('game-area');
+        const startScreen = document.getElementById('start-screen');
+        const playBtn = document.getElementById('playBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const screenshotBtn = document.getElementById('screenshotBtn');
+        const scoreDisplay = document.getElementById('score');
+        const mistakesDisplay = document.getElementById('mistakes');
+        const timerDisplay = document.getElementById('timer');
+        const highScoreDisplay = document.getElementById('high-score');
+        const bestTimeDisplay = document.getElementById('best-time');
+        const gameOverDisplay = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalHighScoreDisplay = document.getElementById('final-high-score');
+        const finalMistakesDisplay = document.getElementById('final-mistakes');
+        const finalTimeDisplay = document.getElementById('final-time');
+        const finalBestTimeDisplay = document.getElementById('final-best-time');
+        const tiktokShare = document.getElementById('tiktokShare');
+        const facebookShare = document.getElementById('facebookShare');
+
+        let score = 0, mistakes = 0, seconds = 0;
+        let timerInterval = null, animationFrameId = null;
+        let obstacles = [], items = [];
+        let lastSpawnTime = 0;
+        let gameActive = false;
+        const maxMistakes = 5;
+
+        let highScore = parseInt(localStorage.getItem('dashainDashHighScore') || '0', 10) || 0;
+        let bestTime = parseInt(localStorage.getItem('dashainDashBestTime') || '0', 10) || 0;
+
+        // Player and lanes state
+        let playerEl = null;
+        let lanes = []; // array of left positions (px)
+        let laneCount = 4; // default; we'll adapt based on width
+        let currentLaneIndex = 0;
+
+        highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+        bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
+
+        /* ======== Utilities ======== */
+        function formatTime(s) {
+            const min = Math.floor(s / 60);
+            const sec = s % 60;
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        function setHighScore(v) { localStorage.setItem('dashainDashHighScore', v); }
+        function setBestTime(v) { localStorage.setItem('dashainDashBestTime', v); }
+
+        /* ======== Responsive lanes ========
+           Compute lane left x positions dynamically so lanes spread across full game-area.
+           Lanes place player centered in each lane.
+        */
+        function computeLanes() {
+            const areaRect = gameArea.getBoundingClientRect();
+            const areaWidth = Math.max(200, areaRect.width); // fallback
+            // Choose laneCount based on width but keep between 3..6
+            const approxLane = Math.floor(areaWidth / 120);
+            laneCount = Math.min(6, Math.max(3, approxLane));
+            // determine player width (estimate from CSS)
+            const sampleW = playerEl ? playerEl.getBoundingClientRect().width : (areaWidth / laneCount) * 0.6;
+            lanes = [];
+            const laneWidth = areaWidth / laneCount;
+            for (let i = 0; i < laneCount; i++) {
+                // center player inside lane
+                const left = Math.round(i * laneWidth + (laneWidth - sampleW) / 2);
+                lanes.push(left);
+            }
+            // ensure currentLaneIndex within bounds
+            currentLaneIndex = Math.min(currentLaneIndex, laneCount - 1);
+        }
+
+        /* ======== Create / remove entities ======== */
+        function createPlayer() {
+            if (playerEl) playerEl.remove();
+            playerEl = document.createElement('div');
+            playerEl.className = 'player';
+            playerEl.setAttribute('aria-label', 'player');
+            gameArea.appendChild(playerEl);
+            // compute lanes after element inserted
+            computeLanes();
+            // set player to middle lane
+            currentLaneIndex = Math.floor(laneCount / 2);
+            playerEl.style.left = `${lanes[currentLaneIndex]}px`;
+        }
+
+        function createObstacle() {
+            if (!gameArea) return;
+            const obs = document.createElement('div');
+            obs.className = 'obstacle';
+            const chosenLane = lanes[Math.floor(Math.random() * lanes.length)];
+            obs.style.left = `${chosenLane}px`;
+            obs.style.top = `-100px`;
+            gameArea.appendChild(obs);
+            obstacles.push({ el: obs, x: chosenLane, y: -100 });
+        }
+
+        function createItem() {
+            if (!gameArea) return;
+            const it = document.createElement('div');
+            it.className = 'item';
+            const chosenLane = lanes[Math.floor(Math.random() * lanes.length)];
+            // spawn slightly above visible area
+            it.style.left = `${chosenLane}px`;
+            it.style.top = `-120px`;
+            gameArea.appendChild(it);
+            items.push({ el: it, x: chosenLane, y: -120 });
+        }
+
+        function createSplash(x, y) {
+            const splash = document.createElement('div');
+            splash.className = 'splash';
+            splash.style.left = `${x - 35}px`;
+            splash.style.top = `${y - 10}px`;
+            gameArea.appendChild(splash);
+            setTimeout(() => splash.remove(), 800);
+        }
+
+        /* ======== Movement by lane index ======== */
+        function movePlayerDir(dir) {
+            if (!gameActive || !playerEl) return;
+            if (dir === 'left' && currentLaneIndex > 0) currentLaneIndex--;
+            else if (dir === 'right' && currentLaneIndex < laneCount - 1) currentLaneIndex++;
+            playerEl.style.left = `${lanes[currentLaneIndex]}px`;
+        }
+
+        /* ======== Collisions ======== */
+        function checkCollisions() {
+            if (!playerEl) return;
+            const playerRect = playerEl.getBoundingClientRect();
+            // obstacles
+            obstacles = obstacles.filter(o => {
+                if (!o.el) return false;
+                const r = o.el.getBoundingClientRect();
+                const hit = !(playerRect.right < r.left || playerRect.left > r.right || playerRect.bottom < r.top || playerRect.top > r.bottom);
+                if (hit && gameActive) {
+                    mistakes += 1;
+                    mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
+                    createSplash(playerRect.left + playerRect.width / 2, playerRect.top + playerRect.height / 2);
+                    o.el.remove();
+                    return false;
+                }
+                return true;
+            });
+            // items
+            items = items.filter(i => {
+                if (!i.el) return false;
+                const r = i.el.getBoundingClientRect();
+                const hit = !(playerRect.right < r.left || playerRect.left > r.right || playerRect.bottom < r.top || playerRect.top > r.bottom);
+                if (hit && gameActive) {
+                    score += 10;
+                    scoreDisplay.textContent = `स्कोर: ${score}`;
+                    createSplash(r.left + r.width / 2, r.top + r.height / 2);
+                    i.el.remove();
+                    return false;
+                }
+                return true;
+            });
+            if (mistakes >= maxMistakes) endGame();
+        }
+
+        /* ======== Game loop ======== */
+        function gameLoop(timestamp) {
+            if (!gameActive) return;
+            const areaRect = gameArea.getBoundingClientRect();
+            const baseSpeed = 2.5;
+            const speed = baseSpeed + Math.min(score / 100, 6); // adapt speed
+
+            // move obstacles
+            obstacles.forEach(o => {
+                o.y += speed;
+                if (o.el) o.el.style.top = `${o.y}px`;
+            });
+            // remove offscreen obstacles
+            obstacles = obstacles.filter(o => {
+                if (o.y > areaRect.height + 200) { o.el && o.el.remove(); return false; }
+                return true;
+            });
+
+            // move items
+            items.forEach(i => {
+                i.y += speed;
+                if (i.el) i.el.style.top = `${i.y}px`;
+            });
+            // remove offscreen items
+            items = items.filter(i => {
+                if (i.y > areaRect.height + 200) { i.el && i.el.remove(); return false; }
+                return true;
+            });
+
+            // spawn timing (becomes faster as score grows)
+            const spawnInterval = Math.max(350, 1400 - score * 8);
+            if (timestamp - lastSpawnTime > spawnInterval) {
+                if (Math.random() < 0.75) createObstacle();
+                if (Math.random() < 0.55) createItem();
+                lastSpawnTime = timestamp;
+            }
+
+            checkCollisions();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        /* ======== Timer ======== */
+        function startTimer() {
+            clearInterval(timerInterval);
+            seconds = 0;
+            timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
+            timerInterval = setInterval(() => {
+                if (gameActive) {
+                    seconds += 1;
+                    timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
+                }
+            }, 1000);
+        }
+
+        /* ======== Start / End / Restart ======== */
+        function startGame() {
+            // reset
+            startScreen.style.display = 'none';
+            gameOverDisplay.style.display = 'none';
+            gameArea.innerHTML = '';
+            score = 0; mistakes = 0;
+            scoreDisplay.textContent = `स्कोर: ${score}`;
+            mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
+            gameActive = true;
+            obstacles = []; items = [];
+            createPlayer();
+            computeLanes(); // ensure lanes up-to-date
+            lastSpawnTime = performance.now();
+            startTimer();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            cancelAnimationFrame(animationFrameId);
+
+            if (score > highScore) {
+                highScore = score;
+                highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+                setHighScore(highScore);
+            }
+            if (!bestTime || seconds > bestTime) {
+                bestTime = seconds;
+                bestTimeDisplay.textContent = `उत्तम समय: ${formatTime(bestTime)}`;
+                setBestTime(bestTime);
+            }
+
+            finalScoreDisplay.textContent = score;
+            finalHighScoreDisplay.textContent = highScore;
+            finalMistakesDisplay.textContent = mistakes;
+            finalTimeDisplay.textContent = formatTime(seconds);
+            finalBestTimeDisplay.textContent = bestTime ? formatTime(bestTime) : '--:--';
+
+            gameOverDisplay.style.display = 'flex';
+            startScreen.style.display = 'flex';
+
+            // clear remaining DOM elements
+            obstacles.forEach(o => o.el && o.el.remove());
+            items.forEach(i => i.el && i.el.remove());
+            obstacles = []; items = [];
+            playerEl && playerEl.remove();
+            playerEl = null;
+        }
+
+        function restartGame() {
+            gameOverDisplay.style.display = 'none';
+            startScreen.style.display = 'flex';
+            gameActive = false;
+            clearInterval(timerInterval);
+            cancelAnimationFrame(animationFrameId);
+            gameArea.innerHTML = '';
+            obstacles = []; items = [];
+        }
+
+        /* ======== Screenshot & Sharing ======== */
+        function takeScreenshot() {
+            if (typeof html2canvas === 'undefined') {
+                alert('Screenshot library not yet loaded. Try again in a moment.');
+                return;
+            }
+            html2canvas(gameContainer).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `दशैं_ड्यास_स्कोर_${score}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            }).catch(err => {
+                console.error(err);
+                alert('स्क्रिनसट लिन समस्या भयो। कन्सोल हेर्नुहोस्।');
+            });
+        }
+
+        function shareToTikTok(e) {
+            e.preventDefault();
+            if (navigator.share) {
+                navigator.share({
+                    title: `दशैं ड्यास - स्कोर ${score}!`,
+                    text: `मैले दशैं ड्यासमा ${score} स्कोर र ${formatTime(seconds)} समयमा खेलें! तपाईं पनि खेल्नुहोस् 🎮`,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                const text = `दशैं ड्यास - स्कोर ${score}! समय ${formatTime(seconds)}! शुभ दशैं! 🎉\n${window.location.href}`;
+                navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो! पेस्ट गर्नुहोस्।')).catch(() => alert('कपी गर्न सकिएन।'));
+            }
+        }
+
+        function shareToFacebook(e) {
+            e.preventDefault();
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent('मैले दशैं ड्यासमा ' + score + ' स्कोर र ' + formatTime(seconds) + ' समयमा खेलें! शुभ दशैं! 🎉')}`;
+            window.open(url, '_blank', 'width=600,height=400');
+        }
+
+        /* ======== Input handlers ======== */
+        playBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', () => { restartGame(); startGame(); });
+        screenshotBtn.addEventListener('click', takeScreenshot);
+        tiktokShare.addEventListener('click', shareToTikTok);
+        facebookShare.addEventListener('click', shareToFacebook);
+
+        document.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            if (e.key === 'ArrowLeft') movePlayerDir('left');
+            if (e.key === 'ArrowRight') movePlayerDir('right');
+        });
+
+        // Touch swipe handler (left/right)
+        let touchStartX = null;
+        gameArea.addEventListener('touchstart', (e) => {
+            if (!gameActive) return;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        gameArea.addEventListener('touchend', (e) => {
+            if (!gameActive || touchStartX === null) return;
+            const touchEndX = (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientX) || touchStartX;
+            const delta = touchEndX - touchStartX;
+            if (Math.abs(delta) > 30) movePlayerDir(delta < 0 ? 'left' : 'right');
+            touchStartX = null;
+        }, { passive: true });
+
+        // Resize: recompute lanes so game fills width on desktop
+        let resizeTimeout = null;
+        window.addEventListener('resize', () => {
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (playerEl) {
+                    computeLanes();
+                    playerEl.style.left = `${lanes[currentLaneIndex]}px`;
+                }
+            }, 120);
+        });
+
+        // Init UI state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            startScreen.style.display = 'flex';
+            gameOverDisplay.style.display = 'none';
+            scoreDisplay.textContent = `स्कोर: ${score}`;
+            mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
+            timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
+            highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+            bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
+        });
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            gameActive = false;
+            clearInterval(timerInterval);
+            cancelAnimationFrame(animationFrameId);
+        });
+    </script>
+</body>
+</html>
