@@ -2,66 +2,237 @@
 <html lang="ne">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>फल समात्ने खेल | Catch the Fruit</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        html,body { height:100%; }
+        html, body { 
+            height: 100%; 
+            overscroll-behavior: none; /* Prevent pull-to-refresh */
+            touch-action: manipulation; /* Optimize touch interactions */
+        }
         body {
-            font-family:'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-            min-height:100vh; display:flex; flex-direction:column; color:#333; overflow-x:hidden;
+            font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            color: #333; 
+            overflow-x: hidden;
+            overflow-y: auto; /* Allow vertical scrolling for content */
         }
         .header {
-            background: rgba(0,0,0,0.8); padding:10px; display:flex; align-items:center; justify-content:center; gap:15px;
-            box-shadow:0 2px 5px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.8); 
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .header img { width:40px; height:40px; }
-        .header a { color:#ffd700; font-size:clamp(16px,4vw,20px); font-weight:700; text-decoration:none; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
-        .container { width:100%; max-width:900px; margin:0 auto; padding:12px; }
-        .title { text-align:center; font-size:clamp(20px,5vw,28px); font-weight:700; color:#fff; padding:10px 0; text-shadow:0 2px 4px rgba(0,0,0,0.3); }
-        .instructions, .contact { background: rgba(255,255,255,0.95); border-radius:15px; padding:15px; box-shadow:0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.2); margin-bottom:10px; }
-        .instructions h2 { font-size:clamp(16px,4vw,20px); color:#4a5568; text-align:center; margin-bottom:8px; }
-        .instructions ul { list-style:none; color:#718096; font-size:clamp(12px,3vw,14px); }
-        .instructions li { margin-bottom:6px; padding-left:18px; position:relative; }
-        .instructions li::before { content:'🍎'; position:absolute; left:0; top:0; }
-        .dashain-message { background: linear-gradient(135deg,#ff6b6b,#ee5a24); color:white; text-align:center; padding:12px; border-radius:15px; margin:5px 0; font-size:clamp(12px,3vw,14px); box-shadow:0 8px 32px rgba(0,0,0,0.1); animation:pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.02)} }
+        .header img { width: 40px; height: 40px; }
+        .header a { 
+            color: #ffd700; 
+            font-size: clamp(16px, 4vw, 20px); 
+            font-weight: 700; 
+            text-decoration: none; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5); 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 12px; 
+            flex: 1; /* Ensure container takes available space */
+        }
+        .title { 
+            text-align: center; 
+            font-size: clamp(20px, 5vw, 28px); 
+            font-weight: 700; 
+            color: #fff; 
+            padding: 10px 0; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
+        }
+        .instructions, .contact { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 15px; 
+            padding: 15px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            margin-bottom: 10px; 
+        }
+        .instructions h2 { 
+            font-size: clamp(16px, 4vw, 20px); 
+            color: #4a5568; 
+            text-align: center; 
+            margin-bottom: 8px; 
+        }
+        .instructions ul { 
+            list-style: none; 
+            color: #718096; 
+            font-size: clamp(12px, 3vw, 14px); 
+        }
+        .instructions li { 
+            margin-bottom: 6px; 
+            padding-left: 18px; 
+            position: relative; 
+        }
+        .instructions li::before { 
+            content: '🍎'; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+        }
+        .dashain-message { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24); 
+            color: white; 
+            text-align: center; 
+            padding: 12px; 
+            border-radius: 15px; 
+            margin: 5px 0; 
+            font-size: clamp(12px, 3vw, 14px); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+            animation: pulse 2s infinite; 
+        }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.02); } 
+        }
 
         #game-container {
-            position:relative; width:100%; height:clamp(420px,60vh,640px); border-radius:15px;
-            background: linear-gradient(180deg,#87ceeb 0%,#98d8e8 80%,#4a8e4c 100%);
-            box-shadow:0 10px 20px rgba(0,0,0,0.2); border:4px solid #3b5998; overflow:hidden;
+            position: relative; 
+            width: 100%; 
+            height: clamp(420px, 60vh, 640px); 
+            border-radius: 15px;
+            background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            border: 4px solid #3b5998; 
+            overflow: hidden;
+            touch-action: none; /* Prevent default touch behaviors in game area */
         }
-        #game-area { position:absolute; top:0; left:0; width:100%; height:100%; }
+        #game-area { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+        }
 
-        .stats { position:absolute; top:10px; left:10px; right:10px; display:flex; justify-content:space-between; z-index:200; }
-        .stat { background:rgba(255,255,255,0.95); padding:6px 12px; border-radius:15px; font-size:clamp(12px,2.5vw,16px); font-weight:600; color:#2d3748; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-        #high-score { background: rgba(255,215,0,0.95); }
+        .stats { 
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            right: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            z-index: 200; 
+        }
+        .stat { 
+            background: rgba(255,255,255,0.95); 
+            padding: 6px 12px; 
+            border-radius: 15px; 
+            font-size: clamp(12px, 2.5vw, 16px); 
+            font-weight: 600; 
+            color: #2d3748; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+        #high-score { 
+            background: rgba(255,215,0,0.95); 
+        }
 
         #game-over, #start-screen {
-            position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7);
-            display:flex; justify-content:center; align-items:center; z-index:300;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.7);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 300;
         }
-        #game-over { display:none; flex-direction:column; color:white; text-align:center; gap:8px; }
-        #game-over h2 { font-size:clamp(24px,6vw,32px); margin-bottom:8px; background:linear-gradient(45deg,#ff6b6b,#4ecdc4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        #game-over p { font-size:clamp(14px,3.5vw,18px); opacity:0.95; }
+        #game-over { 
+            display: none; 
+            flex-direction: column; 
+            color: white; 
+            text-align: center; 
+            gap: 8px; 
+        }
+        #game-over h2 { 
+            font-size: clamp(24px, 6vw, 32px); 
+            margin-bottom: 8px; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        #game-over p { 
+            font-size: clamp(14px, 3.5vw, 18px); 
+            opacity: 0.95; 
+        }
         .play-btn, .restart-btn, .screenshot-btn {
-            background: linear-gradient(45deg,#4ecdc4,#44a08d); border:none; padding:12px 24px; border-radius:25px; color:white; font-size:clamp(16px,4vw,20px); font-weight:700; cursor:pointer; box-shadow:0 4px 15px rgba(78,205,196,0.4);
+            background: linear-gradient(45deg, #4ecdc4, #44a08d); 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 25px; 
+            color: white; 
+            font-size: clamp(16px, 4vw, 20px); 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+            touch-action: manipulation; /* Ensure smooth touch interactions */
         }
-        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { transform:translateY(-4px); }
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { 
+            transform: translateY(-4px); 
+        }
 
-        .share-buttons { display:flex; gap:8px; margin-top:8px; }
-        .share-btn { padding:10px 18px; border-radius:20px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; color:white; text-decoration:none; }
-        .tiktok-btn { background: linear-gradient(45deg,#ff0050,#ff4d6d); box-shadow:0 4px 15px rgba(255,0,80,0.4); }
-        .facebook-btn { background: linear-gradient(45deg,#3b5998,#4267b2); box-shadow:0 4px 15px rgba(59,89,152,0.4); }
+        .share-buttons { 
+            display: flex; 
+            gap: 8px; 
+            margin-top: 8px; 
+        }
+        .share-btn { 
+            padding: 10px 18px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            color: white; 
+            text-decoration: none; 
+        }
+        .tiktok-btn { 
+            background: linear-gradient(45deg, #ff0050, #ff4d6d); 
+            box-shadow: 0 4px 15px rgba(255,0,80,0.4); 
+        }
+        .facebook-btn { 
+            background: linear-gradient(45deg, #3b5998, #4267b2); 
+            box-shadow: 0 4px 15px rgba(59,89,152,0.4); 
+        }
 
         .item {
-            position:absolute; width:clamp(35px,7vw,60px); height:clamp(35px,7vw,60px); background-size:cover; background-position:center; cursor:pointer; border-radius:50%; transition:transform 0.08s ease; box-shadow:0 6px 12px rgba(0,0,0,0.25);
-            z-index:150; user-select:none; -webkit-user-select:none; touch-action:none;
+            position: absolute; 
+            width: clamp(35px, 7vw, 60px); 
+            height: clamp(35px, 7vw, 60px); 
+            background-size: cover; 
+            background-position: center; 
+            cursor: pointer; 
+            border-radius: 50%; 
+            transition: transform 0.08s ease; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+            z-index: 150; 
+            user-select: none; 
+            -webkit-user-select: none; 
+            touch-action: none; /* Prevent default touch behaviors for items */
         }
-        .item:active { transform:scale(0.96); }
+        .item:active { 
+            transform: scale(0.96); 
+        }
         .apple { background-image: url('fruits_images/apple.png'); }
         .mango { background-image: url('fruits_images/mango.png'); }
         .banana { background-image: url('fruits_images/banana.png'); }
@@ -70,18 +241,65 @@
         .blueberry { background-image: url('fruits_images/blueberry.png'); }
 
         .splash {
-            position:absolute; width:70px; height:24px; background: radial-gradient(circle, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 70%); border-radius:50%; opacity:0; pointer-events:none; animation:splashEffect 0.7s ease-out forwards; z-index:120;
+            position: absolute; 
+            width: 70px; 
+            height: 24px; 
+            background: radial-gradient(circle, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 70%); 
+            border-radius: 50%; 
+            opacity: 0; 
+            pointer-events: none; 
+            animation: splashEffect 0.7s ease-out forwards; 
+            z-index: 120;
         }
-        @keyframes splashEffect { 0%{opacity:0.7; transform:scale(0.5)} 100%{opacity:0; transform:scale(1.5)} }
+        @keyframes splashEffect { 
+            0% { opacity: 0.7; transform: scale(0.5); } 
+            100% { opacity: 0; transform: scale(1.5); } 
+        }
 
-        .footer { text-align:center; padding:10px 0; color:white; font-size:clamp(10px,2.5vw,12px); }
-        .social-links { display:flex; justify-content:center; gap:12px; margin-top:8px; }
-        .social-link { width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; color:white; font-size:18px; transition:transform 0.3s ease; }
-        .tiktok-social { background: linear-gradient(45deg,#ff0050,#ff4d6d); }
-        .facebook-social { background: linear-gradient(45deg,#3b5998,#4267b2); }
-        @media (max-width:768px) {
-            .stats { flex-direction:column; gap:8px; align-items:center; }
-            .share-buttons { flex-direction:column; width:80%; }
+        .footer { 
+            text-align: center; 
+            padding: 10px 0; 
+            color: white; 
+            font-size: clamp(10px, 2.5vw, 12px); 
+        }
+        .social-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            margin-top: 8px; 
+        }
+        .social-link { 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-decoration: none; 
+            color: white; 
+            font-size: 18px; 
+            transition: transform 0.3s ease; 
+        }
+        .tiktok-social { 
+            background: linear-gradient(45deg, #ff0050, #ff4d6d); 
+        }
+        .facebook-social { 
+            background: linear-gradient(45deg, #3b5998, #4267b2); 
+        }
+        @media (max-width: 768px) {
+            .stats { 
+                flex-direction: column; 
+                gap: 8px; 
+                align-items: center; 
+            }
+            .share-buttons { 
+                flex-direction: column; 
+                width: 80%; 
+                margin: 0 auto; 
+            }
+            #game-container {
+                height: clamp(360px, 50vh, 480px); /* Adjust game height for smaller screens */
+            }
         }
     </style>
 </head>
@@ -91,15 +309,13 @@
     </div>
 
     <div class="container">
-        <h1 class="title">फल समात्ने खेल</h1>
-
         <div class="dashain-message">🎉 शुभ दशैंको हार्दिक शुभकामना! फलहरू समातेर आनन्द लिनुहोस्! 🥳</div>
 
         <div class="instructions">
             <h2>कसरी खेल्ने?</h2>
             <ul>
                 <li>खेल सुरु गर्न "खेल्नुहोस्" बटन थिच्नुहोस्।</li>
-                <li>फलहरू (स्याउ, आँप, केरा, स्ट्रबेरी, अङ्गुर, ब्लूबेरी) मा क्लिक गर्नुहोस् - प्रत्येकले १ अङ्क थपिन्छ।</li>
+                <li>फलहरू (स्याउ, आँप, केरा, स्ट्रबेरी, अङ्गुर, ब्लूबेरी) मा ट्याप गर्नुहोस् - प्रत्येकले १ अङ्क थपिन्छ।</li>
                 <li>२० वटा फलहरू गुमाउनु भयो भने खेल समाप्त हुन्छ।</li>
                 <li>स्कोर बढ्दै जाँदा फलहरू छिटो झर्छन्!</li>
             </ul>
@@ -130,6 +346,8 @@
                 </div>
             </div>
         </div>
+
+        <h1 class="title">फल समात्ने खेल</h1>
 
         <div class="contact">
             <p>सम्पर्क: <a href="tel:9808942229">9808942229</a> | इमेल: <a href="mailto:rstechzen@gmail.com">rstechzen@gmail.com</a></p>
@@ -168,7 +386,7 @@
         // State
         let score = 0;
         let misses = 0;
-        let highScore = parseInt(getCookie('highScore') || '0', 10) || 0;
+        let highScore = parseInt(localStorage.getItem('highScore') || '0', 10) || 0;
         let gameActive = false;
         let spawnIntervalId = null;
         let activeItems = []; // { el, rafId } for cleanup
@@ -186,29 +404,17 @@
             return id;
         }
 
-        // Cookie handlers
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                const date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict";
-        }
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
+        // LocalStorage for high score (replacing cookies for better mobile support)
+        function setHighScore(value) {
+            localStorage.setItem('highScore', value);
         }
 
-        // Fall speed depends on score — returns pixels per frame roughly
+        // Fall speed depends on score — returns pixels per frame
         function getFallSpeed() {
-            if (score <= 10) return 1 + Math.random() * 1;       // 1 - 2 px/frame
-            if (score <= 20) return 3 + Math.random() * 2;       // 3 - 5
-            if (score <= 30) return 5 + Math.random() * 2;       // 5 - 7
-            return 7 + Math.random() * 2;                        // 7 - 9
+            if (score <= 10) return 1 + Math.random() * 1; // 1 - 2 px/frame
+            if (score <= 20) return 3 + Math.random() * 2; // 3 - 5
+            if (score <= 30) return 5 + Math.random() * 2; // 5 - 7
+            return 7 + Math.random() * 2; // 7 - 9
         }
 
         // Create splash
@@ -286,25 +492,28 @@
             rafId = requestAnimationFrame(fall);
             activeItems.push({ el: item, rafId });
 
+            // Unified click and touch handler
             function onHit(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 if (!gameActive) return;
                 score += 1;
                 if (score > highScore) {
                     highScore = score;
                     highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
-                    setCookie('highScore', highScore, 365);
+                    setHighScore(highScore);
                 }
                 scoreDisplay.textContent = `स्कोर: ${score}`;
                 cancelAnimationFrame(rafId);
-                item.removeEventListener('pointerdown', onHit);
+                item.removeEventListener('click', onHit);
+                item.removeEventListener('touchstart', onHit);
                 if (item.parentElement) item.remove();
                 activeItems = activeItems.filter(a => a.el !== item);
+                createSplash(left + itemW / 2, parseFloat(item.style.top) + itemH / 2);
             }
 
-            item.addEventListener('pointerdown', onHit);
-
-            console.log(`Created item: ${type}, image: images/${type}.png`);
+            item.addEventListener('click', onHit, { passive: false });
+            item.addEventListener('touchstart', onHit, { passive: false });
         }
 
         // Start spawning items periodically
@@ -332,12 +541,12 @@
         }
 
         // End game: stop all animations and timers
-        async function endGame() {
+        function endGame() {
             gameActive = false;
             finalScoreDisplay.textContent = score;
             finalHighScoreDisplay.textContent = highScore;
             gameOverDisplay.style.display = 'flex';
-            startScreen.style.display = 'flex';
+            startScreen.style.display = 'none'; // Keep start screen hidden after game over
 
             if (spawnIntervalId) {
                 clearInterval(spawnIntervalId);
@@ -345,7 +554,7 @@
             }
 
             activeItems.forEach(a => {
-                try { cancelAnimationFrame(a.rafId); } catch(e){}
+                try { cancelAnimationFrame(a.rafId); } catch(e) {}
                 if (a.el && a.el.parentElement) a.el.remove();
             });
             activeItems = [];
@@ -355,21 +564,23 @@
             gameOverDisplay.style.display = 'none';
             startScreen.style.display = 'flex';
             activeItems.forEach(a => {
-                try { cancelAnimationFrame(a.rafId); } catch(e){}
+                try { cancelAnimationFrame(a.rafId); } catch(e) {}
                 if (a.el && a.el.parentElement) a.el.remove();
             });
             activeItems = [];
-            score = 0; misses = 0;
+            score = 0; 
+            misses = 0;
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
             gameActive = false;
         }
 
         // Start game logic
-        async function startGame() {
+        function startGame() {
             startScreen.style.display = 'none';
             gameOverDisplay.style.display = 'none';
-            score = 0; misses = 0;
+            score = 0; 
+            misses = 0;
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
             gameActive = true;
@@ -404,7 +615,7 @@
                 }).catch(console.error);
             } else {
                 const text = `फल समात्ने खेल - स्कोर ${score}! शुभ दशैं! 🎉\n${window.location.href}`;
-                navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो! पेस्ट गर्नुहोस्।')).catch(()=>alert('कपी गर्न सकिएन।'));
+                navigator.clipboard.writeText(text).then(() => alert('टिकटकको लागि लिङ्क कपी भयो! पेस्ट गर्नुहोस्।')).catch(() => alert('कपी गर्न सकिएन।'));
             }
         }
         function shareToFacebook(e) {
@@ -414,23 +625,38 @@
         }
 
         // Wire UI events
-        playBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', async () => {
+        playBtn.addEventListener('click', startGame, { passive: false });
+        playBtn.addEventListener('touchstart', startGame, { passive: false });
+        restartBtn.addEventListener('click', () => {
             restartGameUIReset();
-            await startGame();
-        });
-        screenshotBtn.addEventListener('click', takeScreenshot);
-        tiktokShare.addEventListener('click', shareToTikTok);
-        facebookShare.addEventListener('click', shareToFacebook);
+            startGame();
+        }, { passive: false });
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            restartGameUIReset();
+            startGame();
+        }, { passive: false });
+        screenshotBtn.addEventListener('click', takeScreenshot, { passive: false });
+        screenshotBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            takeScreenshot();
+        }, { passive: false });
+        tiktokShare.addEventListener('click', shareToTikTok, { passive: false });
+        tiktokShare.addEventListener('touchstart', shareToTikTok, { passive: false });
+        facebookShare.addEventListener('click', shareToFacebook, { passive: false });
+        facebookShare.addEventListener('touchstart', shareToFacebook, { passive: false });
 
         // Prevent page scrolling while touching game container
-        gameContainer.addEventListener('touchstart', (e) => e.preventDefault(), { passive:false });
+        gameContainer.addEventListener('touchstart', (e) => {
+            if (e.target.classList.contains('item')) return; // Allow item touches
+            e.preventDefault();
+        }, { passive: false });
 
         // Clean up on page unload
-        window.addEventListener('beforeunload', async () => {
+        window.addEventListener('beforeunload', () => {
             if (spawnIntervalId) clearInterval(spawnIntervalId);
             activeItems.forEach(a => {
-                try { cancelAnimationFrame(a.rafId); } catch(e){}
+                try { cancelAnimationFrame(a.rafId); } catch(e) {}
             });
         });
 
@@ -441,6 +667,20 @@
             scoreDisplay.textContent = `स्कोर: ${score}`;
             missesDisplay.textContent = `गुमाएका: ${misses}`;
             highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
+        });
+
+        // Handle window resize for dynamic game area sizing
+        window.addEventListener('resize', () => {
+            activeItems.forEach(a => {
+                const item = a.el;
+                if (!item || !item.parentElement) return;
+                const itemRect = item.getBoundingClientRect();
+                const areaRect = gameArea.getBoundingClientRect();
+                const maxX = Math.max(0, areaRect.width - itemRect.width);
+                if (parseFloat(item.style.left) > maxX) {
+                    item.style.left = `${maxX}px`;
+                }
+            });
         });
     </script>
 </body>
