@@ -42,7 +42,8 @@
         #game-container {
             position: relative; width: 100%; max-width: 500px; margin: 0 auto;
             border-radius: 10px; background: linear-gradient(180deg, #87ceeb, #4a8e4c);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); border: 3px solid #3b5998; overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); border: 3px solid #3b5998 Astral;
+            overflow: hidden;
             aspect-ratio: 1 / 1; touch-action: none;
         }
         #game-area {
@@ -87,28 +88,28 @@
         .facebook-btn { background: linear-gradient(45deg, #3b5998, #4267b2); }
 
         .tile {
-            width: 100%; height: 100%; background-size: cover; border-radius: 5px;
+            width: 100%; height: 100%; background-size: 400% 400%; border-radius: 5px;
             cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             touch-action: none;
         }
         .tile:hover { transform: scale(1.03); }
         .tile.empty { background: #ffffff; cursor: default; box-shadow: none; }
         .tile.empty:hover { transform: none; }
-        .tile-0 { background-image: url('mimage/m7.jpg'); background-position: 0 0; }
-        .tile-1 { background-image: url('mimage/m7.jpg'); background-position: -33.33% 0; }
-        .tile-2 { background-image: url('mimage/m7.jpg'); background-position: -66.67% 0; }
-        .tile-3 { background-image: url('mimage/m7.jpg'); background-position: -100% 0; }
-        .tile-4 { background-image: url('mimage/m7.jpg'); background-position: 0 -33.33%; }
-        .tile-5 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -33.33%; }
-        .tile-6 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -33.33%; }
-        .tile-7 { background-image: url('mimage/m7.jpg'); background-position: -100% -33.33%; }
-        .tile-8 { background-image: url('mimage/m7.jpg'); background-position: 0 -66.67%; }
-        .tile-9 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -66.67%; }
-        .tile-10 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -66.67%; }
-        .tile-11 { background-image: url('mimage/m7.jpg'); background-position: -100% -66.67%; }
-        .tile-12 { background-image: url('mimage/m7.jpg'); background-position: 0 -100%; }
-        .tile-13 { background-image: url('mimage/m7.jpg'); background-position: -33.33% -100%; }
-        .tile-14 { background-image: url('mimage/m7.jpg'); background-position: -66.67% -100%; }
+        .tile-0 { background-image: url('mimage/m7.jpg'); background-position: 0% 0%; }
+        .tile-1 { background-image: url('mimage/m7.jpg'); background-position: 33.33% 0%; }
+        .tile-2 { background-image: url('mimage/m7.jpg'); background-position: 66.67% 0%; }
+        .tile-3 { background-image: url('mimage/m7.jpg'); background-position: 100% 0%; }
+        .tile-4 { background-image: url('mimage/m7.jpg'); background-position: 0% 33.33%; }
+        .tile-5 { background-image: url('mimage/m7.jpg'); background-position: 33.33% 33.33%; }
+        .tile-6 { background-image: url('mimage/m7.jpg'); background-position: 66.67% 33.33%; }
+        .tile-7 { background-image: url('mimage/m7.jpg'); background-position: 100% 33.33%; }
+        .tile-8 { background-image: url('mimage/m7.jpg'); background-position: 0% 66.67%; }
+        .tile-9 { background-image: url('mimage/m7.jpg'); background-position: 33.33% 66.67%; }
+        .tile-10 { background-image: url('mimage/m7.jpg'); background-position: 66.67% 66.67%; }
+        .tile-11 { background-image: url('mimage/m7.jpg'); background-position: 100% 66.67%; }
+        .tile-12 { background-image: url('mimage/m7.jpg'); background-position: 0% 100%; }
+        .tile-13 { background-image: url('mimage/m7.jpg'); background-position: 33.33% 100%; }
+        .tile-14 { background-image: url('mimage/m7.jpg'); background-position: 66.67% 100%; }
         .tile-15 { background: #ffffff; }
 
         .footer { text-align: center; padding: 10px 0; color: white; font-size: clamp(10px, 2.5vw, 12px); }
@@ -144,8 +145,6 @@
 
         <div class="dashain-message">🎉 शुभ दशैंको हार्दिक शुभकामना! टाइलहरू मिलाएर तस्वीर बनाउनुहोस्! 🥳</div>
 
-        
-
         <div class="stats">
             <div class="stat" id="moves">चालहरू: ०</div>
             <div class="stat" id="mistakes">गल्तीहरू: ०</div>
@@ -174,7 +173,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="instructions">
             <h2>कसरी खेल्ने?</h2>
