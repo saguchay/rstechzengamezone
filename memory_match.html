@@ -2,7 +2,7 @@
 <html lang="ne">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>मेमोरी म्याच | Memory Match</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -11,63 +11,252 @@
         body {
             font-family: 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; flex-direction: column; color: #333; overflow-x: hidden;
+            min-height: 100vh; display: flex; flex-direction: column; color: #333; 
+            touch-action: manipulation; /* Optimize touch response */
+            -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
         }
         .header {
-            background: rgba(0, 0, 0, 0.8); padding: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;
+            background: rgba(0, 0, 0, 0.8); 
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        .header a { color: #ffd700; font-size: clamp(16px, 4vw, 20px); font-weight: 700; text-decoration: none; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
-        .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 12px; }
-        .title { text-align: center; font-size: clamp(20px, 5vw, 28px); font-weight: 700; color: #fff; padding: 10px 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-        .instructions, .contact { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px; }
-        .instructions h2 { font-size: clamp(16px, 4vw, 20px); color: #4a5568; text-align: center; margin-bottom: 8px; }
-        .instructions ul { list-style: none; color: #718096; font-size: clamp(12px, 3vw, 14px); }
-        .instructions li { margin-bottom: 6px; padding-left: 18px; position: relative; }
-        .instructions li::before { content: '🃏'; position: absolute; left: 0; top: 0; }
-        .dashain-message { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; text-align: center; padding: 12px; border-radius: 15px; margin: 5px 0; font-size: clamp(12px, 3vw, 14px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        .header a { 
+            color: #ffd700; 
+            font-size: clamp(14px, 3.5vw, 18px); 
+            font-weight: 700; 
+            text-decoration: none; 
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 10px; 
+        }
+        .title { 
+            text-align: center; 
+            font-size: clamp(18px, 4.5vw, 26px); 
+            font-weight: 700; 
+            color: #fff; 
+            padding: 8px 0; 
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
+        }
+        .instructions, .contact { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 12px; 
+            padding: 12px; 
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1); 
+            backdrop-filter: blur(8px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            margin-bottom: 8px; 
+        }
+        .instructions h2 { 
+            font-size: clamp(14px, 3.5vw, 18px); 
+            color: #4a5568; 
+            text-align: center; 
+            margin-bottom: 6px; 
+        }
+        .instructions ul { 
+            list-style: none; 
+            color: #718096; 
+            font-size: clamp(11px, 2.8vw, 13px); 
+        }
+        .instructions li { 
+            margin-bottom: 5px; 
+            padding-left: 16px; 
+            position: relative; 
+        }
+        .instructions li::before { 
+            content: '🃏'; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+        }
+        .dashain-message { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24); 
+            color: white; 
+            text-align: center; 
+            padding: 10px; 
+            border-radius: 12px; 
+            margin: 4px 0; 
+            font-size: clamp(11px, 2.8vw, 13px); 
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1); 
+            animation: pulse 2s infinite; 
+        }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.02); } 
+        }
 
         #game-container {
-            position: relative; width: 100%; height: clamp(420px, 60vh, 640px); border-radius: 15px;
+            position: relative; 
+            width: 100%; 
+            height: clamp(360px, 55vh, 560px); 
+            border-radius: 12px;
             background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 80%, #4a8e4c 100%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); border: 4px solid #3b5998; overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+            border: 3px solid #3b5998; 
+            overflow: hidden;
+            touch-action: none; /* Prevent pinch zoom and scrolling */
         }
-        #game-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; }
+        #game-area { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+            padding: 8px; 
+        }
 
-        .stats { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; z-index: 200; }
-        .stat { background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 15px; font-size: clamp(12px, 2.5vw, 16px); font-weight: 600; color: #2d3748; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        #high-score, #best-time { background: rgba(255, 215, 0, 0.95); }
+        .stats { 
+            position: absolute; 
+            top: 8px; 
+            left: 8px; 
+            right: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            z-index: 200; 
+            flex-wrap: wrap; 
+            gap: 6px; 
+        }
+        .stat { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 5px 10px; 
+            border-radius: 12px; 
+            font-size: clamp(10px, 2.2vw, 14px); 
+            font-weight: 600; 
+            color: #2d3748; 
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); 
+        }
+        #high-score, #best-time { 
+            background: rgba(255, 215, 0, 0.95); 
+        }
 
         #game-over, #start-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
-            display: flex; justify-content: center; align-items: center; z-index: 300;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.7);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 300;
         }
-        #game-over { display: none; flex-direction: column; color: white; text-align: center; gap: 8px; }
-        #game-over h2 { font-size: clamp(24px, 6vw, 32px); margin-bottom: 8px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        #game-over p { font-size: clamp(14px, 3.5vw, 18px); opacity: 0.95; }
+        #game-over { 
+            display: none; 
+            flex-direction: column; 
+            color: white; 
+            text-align: center; 
+            gap: 6px; 
+            padding: 10px;
+        }
+        #game-over h2 { 
+            font-size: clamp(20px, 5vw, 28px); 
+            margin-bottom: 6px; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        #game-over p { 
+            font-size: clamp(12px, 3vw, 16px); 
+            opacity: 0.95; 
+        }
         .play-btn, .restart-btn, .screenshot-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d); border: none; padding: 12px 24px; border-radius: 25px; color: white; font-size: clamp(16px, 4vw, 20px); font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            background: linear-gradient(45deg, #4ecdc4, #44a08d); 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 20px; 
+            color: white; 
+            font-size: clamp(14px, 3.5vw, 18px); 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 3px 12px rgba(78, 205, 196, 0.4);
+            touch-action: manipulation;
         }
-        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { transform: translateY(-4px); }
+        .play-btn:hover, .restart-btn:hover, .screenshot-btn:hover { 
+            transform: translateY(-3px); 
+        }
 
-        .share-buttons { display: flex; gap: 8px; margin-top: 8px; }
-        .share-btn { padding: 10px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; color: white; text-decoration: none; }
-        .tiktok-btn { background: linear-gradient(45deg, #ff0050, #ff4d6d); box-shadow: 0 4px 15px rgba(255, 0, 80, 0.4); }
-        .facebook-btn { background: linear-gradient(45deg, #3b5998, #4267b2); box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4); }
+        .share-buttons { 
+            display: flex; 
+            gap: 6px; 
+            margin-top: 6px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+        .share-btn { 
+            padding: 8px 16px; 
+            border-radius: 18px; 
+            font-size: clamp(12px, 3vw, 14px); 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            color: white; 
+            text-decoration: none; 
+        }
+        .tiktok-btn { 
+            background: linear-gradient(45deg, #ff0050, #ff4d6d); 
+            box-shadow: 0 3px 12px rgba(255, 0, 80, 0.4); 
+        }
+        .facebook-btn { 
+            background: linear-gradient(45deg, #3b5998, #4267b2); 
+            box-shadow: 0 3px 12px rgba(59, 89, 152, 0.4); 
+        }
 
         .card {
-            position: relative; width: 100%; height: 100%; perspective: 1000px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none;
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            perspective: 1000px; 
+            cursor: pointer; 
+            user-select: none; 
+            -webkit-user-select: none; 
+            touch-action: manipulation;
         }
         .card-inner {
-            position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25); border-radius: 10px;
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            transition: transform 0.5s; 
+            transform-style: preserve-3d; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); 
+            border-radius: 8px;
         }
-        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card.flipped .card-inner { 
+            transform: rotateY(180deg); 
+        }
         .card-front, .card-back {
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            backface-visibility: hidden; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
-        .card-front { background: linear-gradient(45deg, #3b5998, #4267b2); color: white; font-size: clamp(20px, 5vw, 30px); }
-        .card-back { background-size: cover; background-position: center; transform: rotateY(180deg); }
+        .card-front { 
+            background: linear-gradient(45deg, #3b5998, #4267b2); 
+            color: white; 
+            font-size: clamp(16px, 4vw, 24px); 
+        }
+        .card-back { 
+            background-size: cover; 
+            background-position: center; 
+            transform: rotateY(180deg); 
+        }
         .image1 { background-image: url('mimage/m1.jpg'); }
         .image2 { background-image: url('mimage/m2.jpg'); }
         .image3 { background-image: url('mimage/m3.jpg'); }
@@ -76,24 +265,83 @@
         .image6 { background-image: url('mimage/m6.jpg'); }
         .image7 { background-image: url('mimage/m7.jpg'); }
         .image8 { background-image: url('mimage/m8.jpg'); }
-        .image9 { background-image: url('mimage/m9.jpg'); }
-        .image10 { background-image: url('mimage/m10.jpg'); }
-        .image11 { background-image: url('mimage/m11.jpg'); }
-        .image12 { background-image: url('mimage/m12.jpg'); }
 
-        .footer { text-align: center; padding: 10px 0; color: white; font-size: clamp(10px, 2.5vw, 12px); }
-        .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
-        .social-link { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 18px; transition: transform 0.3s ease; }
-        .tiktok-social { background: linear-gradient(45deg, #ff0050, #ff4d6d); }
-        .facebook-social { background: linear-gradient(45deg, #3b5998, #4267b2); }
+        .footer { 
+            text-align: center; 
+            padding: 8px 0; 
+            color: white; 
+            font-size: clamp(9px, 2.2vw, 11px); 
+        }
+        .social-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-top: 6px; 
+        }
+        .social-link { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-decoration: none; 
+            color: white; 
+            font-size: 16px; 
+            transition: transform 0.3s ease; 
+        }
+        .tiktok-social { 
+            background: linear-gradient(45deg, #ff0050, #ff4d6d); 
+        }
+        .facebook-social { 
+            background: linear-gradient(45deg, #3b5998, #4267b2); 
+        }
 
         @media (max-width: 768px) {
-            .stats { flex-direction: column; gap: 8px; align-items: center; }
-            .share-buttons { flex-direction: column; width: 80%; }
-            #game-area { grid-template-columns: repeat(3, 1fr); }
+            #game-container {
+                height: clamp(320px, 50vh, 480px);
+            }
+            #game-area { 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 6px; 
+                padding: 6px; 
+            }
+            .stats { 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                justify-content: center; 
+                gap: 5px; 
+            }
+            .stat { 
+                padding: 4px 8px; 
+                font-size: clamp(9px, 2vw, 12px); 
+            }
+            .share-buttons { 
+                flex-direction: row; 
+                width: 100%; 
+                justify-content: center; 
+            }
         }
         @media (max-width: 480px) {
-            #game-area { grid-template-columns: repeat(2, 1fr); }
+            #game-container {
+                height: clamp(280px, 45vh, 400px);
+            }
+            #game-area { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 5px; 
+                padding: 5px; 
+            }
+            .card-front { 
+                font-size: clamp(14px, 3.5vw, 20px); 
+            }
+            .stats { 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .share-buttons { 
+                flex-direction: column; 
+                align-items: center; 
+            }
         }
     </style>
 </head>
@@ -201,13 +449,13 @@
         let cards = [];
         let flippedCards = [];
         let matchedPairs = 0;
-        const totalPairs = 8; // 4x4 grid = 8 pairs
+        const totalPairs = 8;
 
         // Initialize displays
         highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
         bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
 
-        // Format time (seconds to mm:ss)
+        // Format time
         function formatTime(seconds) {
             const min = Math.floor(seconds / 60);
             const sec = seconds % 60;
@@ -235,7 +483,7 @@
             localStorage.setItem('memoryMatchBestTime', value);
         }
 
-        // Card types (replace with your image names)
+        // Card types
         const types = ['image1', 'image2', 'image3', 'image4', 'image5', 'image6', 'image7', 'image8', 'image1', 'image2', 'image3', 'image4', 'image5', 'image6', 'image7', 'image8'];
 
         // Shuffle array
@@ -262,7 +510,14 @@
             inner.appendChild(front);
             inner.appendChild(back);
             card.appendChild(inner);
+            
+            // Handle both click and touch events
             card.addEventListener('click', () => handleCardClick(card));
+            card.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleCardClick(card);
+            }, { passive: false });
+            
             return card;
         }
 
@@ -296,7 +551,7 @@
                     card1.classList.remove('flipped');
                     card2.classList.remove('flipped');
                     flippedCards = [];
-                }, 1000);
+                }, 800); // Slightly faster flip-back for mobile
             }
         }
 
@@ -369,7 +624,9 @@
                 alert('Screenshot library not yet loaded. Try again in a moment.');
                 return;
             }
-            html2canvas(gameContainer).then(canvas => {
+            html2canvas(gameContainer, {
+                scale: window.devicePixelRatio // Adjust for high-DPI displays
+            }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `मेमोरी_म्याच_स्कोर_${score}.png`;
                 link.href = canvas.toDataURL();
@@ -403,16 +660,38 @@
 
         // Event listeners
         playBtn.addEventListener('click', startGame);
+        playBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startGame();
+        }, { passive: false });
+        
         restartBtn.addEventListener('click', () => {
             restartGame();
             startGame();
         });
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            restartGame();
+            startGame();
+        }, { passive: false });
+        
         screenshotBtn.addEventListener('click', takeScreenshot);
+        screenshotBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            takeScreenshot();
+        }, { passive: false });
+        
         tiktokShare.addEventListener('click', shareToTikTok);
+        tiktokShare.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            shareToTikTok(e);
+        }, { passive: false });
+        
         facebookShare.addEventListener('click', shareToFacebook);
-
-        // Prevent page scrolling on touch
-        gameContainer.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+        facebookShare.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            shareToFacebook(e);
+        }, { passive: false });
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
@@ -432,6 +711,16 @@
             gameActive = false;
             clearInterval(timerInterval);
         });
+
+        // Prevent double-tap zoom and improve touch responsiveness
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
     </script>
 </body>
 </html>
