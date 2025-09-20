@@ -37,6 +37,17 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
+        .banner-image {
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            object-fit: cover;
+            display: block;
+            margin: 10px auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
         .banner {
             background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
@@ -185,6 +196,10 @@
                 padding: 15px;
             }
 
+            .banner-image {
+                height: 400px;
+            }
+
             .game-card img {
                 height: 120px;
             }
@@ -203,6 +218,10 @@
             .banner h1 {
                 font-size: clamp(20px, 5vw, 28px);
             }
+
+            .banner-image {
+                height: 300px;
+            }
         }
     </style>
 </head>
@@ -212,6 +231,7 @@
     </div>
 
     <div class="container">
+        <img src="gim/banner.png" alt="Game Zone Banner" class="banner-image">
         <div class="banner">
             <h1>🎮 RSTECHZEN Game Zone मा स्वागत छ! 🎉</h1>
             <p>रोमाञ्चक खेलहरू खेल्नुहोस् र आफ्नो स्कोर साथीहरूसँग सेयर गर्नुहोस्!</p>
@@ -284,8 +304,4 @@
         }, { passive: false });
     </script>
 </body>
-
 </html>
-
-
-
