@@ -97,7 +97,6 @@
             0%, 100% { transform: scale(1); } 
             50% { transform: scale(1.02); } 
         }
-
         .stats-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
@@ -121,7 +120,6 @@
         #high-score, #best-time { 
             background: rgba(255, 215, 0, 0.95); 
         }
-
         #game-container {
             position: relative; 
             width: 100%; 
@@ -144,7 +142,6 @@
             gap: 8px; 
             padding: 8px; 
         }
-
         #game-over, #start-screen {
             position: absolute; 
             top: 0; 
@@ -193,9 +190,8 @@
             transform: translateY(-3px); 
         }
         .fullscreen-btn, .cancel-fullscreen-btn {
-            display: none; /* Hidden by default, shown on mobile */
+            display: none;
         }
-
         .share-buttons { 
             display: flex; 
             gap: 6px; 
@@ -223,7 +219,6 @@
             background: linear-gradient(45deg, #3b5998, #4267b2); 
             box-shadow: 0 3px 12px rgba(59, 89, 152, 0.4); 
         }
-
         .card {
             position: relative; 
             width: 100%; 
@@ -274,7 +269,6 @@
         .image6 { background-image: url('mimage/m6.jpg'); }
         .image7 { background-image: url('mimage/m7.jpg'); }
         .image8 { background-image: url('mimage/m8.jpg'); }
-
         .footer { 
             text-align: center; 
             padding: 8px 0; 
@@ -305,7 +299,6 @@
         .facebook-social { 
             background: linear-gradient(45deg, #3b5998, #4267b2); 
         }
-
         @media (max-width: 768px) {
             #game-container {
                 height: clamp(320px, 50vh, 480px);
@@ -354,7 +347,6 @@
                 align-items: center; 
             }
         }
-        /* Full-screen mode for mobile */
         .fullscreen-mode #game-container {
             position: fixed;
             top: 0;
@@ -622,6 +614,27 @@
             });
         }
 
+        // Reset game
+        function resetGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            gameOverDisplay.style.display = 'none';
+            startScreen.style.display = 'flex';
+            gameArea.innerHTML = '';
+            cards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            score = 0;
+            moves = 0;
+            mistakes = 0;
+            seconds = 0;
+            scoreDisplay.textContent = `स्कोर: ${score}`;
+            movesDisplay.textContent = `चालहरू: ${moves}`;
+            mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
+            timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
+            exitFullscreen();
+        }
+
         // Start game
         function startGame() {
             startScreen.style.display = 'none';
@@ -652,14 +665,14 @@
             finalTimeDisplay.textContent = formatTime(seconds);
             finalBestTimeDisplay.textContent = bestTime ? formatTime(bestTime) : '--:--';
             gameOverDisplay.style.display = 'flex';
-            exitFullscreen(); // Exit fullscreen on game end
+            exitFullscreen();
         }
 
         // Fullscreen functionality
         function enterFullscreen() {
             if (gameContainer.requestFullscreen) {
                 gameContainer.requestFullscreen();
-            } else if (gameContainer.webkitRequestFullscreen) { // iOS Safari
+            } else if (gameContainer.webkitRequestFullscreen) {
                 gameContainer.webkitRequestFullscreen();
             }
             document.body.classList.add('fullscreen-mode');
@@ -669,7 +682,7 @@
             if (document.fullscreenElement || document.webkitFullscreenElement) {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { // iOS Safari
+                } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
                 }
             }
@@ -724,12 +737,12 @@
         }, { passive: false });
         
         restartBtn.addEventListener('click', () => {
-            restartGame();
+            resetGame();
             startGame();
         });
         restartBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            restartGame();
+            resetGame();
             startGame();
         }, { passive: false });
         
@@ -765,15 +778,7 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
-            startScreen.style.display = 'flex';
-            gameOverDisplay.style.display = 'none';
-            scoreDisplay.textContent = `स्कोर: ${score}`;
-            movesDisplay.textContent = `चालहरू: ${moves}`;
-            mistakesDisplay.textContent = `गल्तीहरू: ${mistakes}`;
-            timerDisplay.textContent = `समय: ${formatTime(seconds)}`;
-            highScoreDisplay.textContent = `उच्च स्कोर: ${highScore}`;
-            bestTimeDisplay.textContent = `उत्तम समय: ${bestTime ? formatTime(bestTime) : '--:--'}`;
-            initGame();
+            resetGame();
         });
 
         // Clean up on unload
